@@ -3,7 +3,7 @@
 % The script studies the price change patterns within a group.
 
 clear
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/charity/code';
+cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/charity/charity';
 
 %%  Determine Global Parameters
 
@@ -92,22 +92,22 @@ pcp.occ = NaN(size(pcp.group,1),6);
 pcp.mag = NaN(size(pcp.group,1),6);
 
 for itergroup = 1:size(pcp.group,1)
-    
+
     % locate the group in dataset
     tempgroup = pcp.group(itergroup,1);
     templocat = pcp.groupall == tempgroup;
-    
+
     % get the pc indicators and levels of the group
     temppcind = pcp.pcindicator( templocat,: );
     temppclev = pcp.pclevel( templocat,: );
-    
+
     % calcaulte of each price change pattern: frequency and magnitude
     [ tempocc,tempmag ] = namegroup_pcp( temppcind,temppclev,0 );
-    
+
     %
     pcp.occ(itergroup,:) = tempocc;
     pcp.mag(itergroup,:) = tempmag;
-    
+
 end
 clearvars temp* iter*
 

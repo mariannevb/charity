@@ -34,8 +34,8 @@ keep y ccode2 age price_decile ijtotal pcf pc_pennyf pchangef pchange_pennyf
 * re-label "pcf"
 la var pcf "price change indicator for fill-forward data"
 la define pcf_lbl -1 "Decrease"
-la define pcf_lbl  0 "No Change", add  
-la define pcf_lbl  1 "Increase", add 
+la define pcf_lbl  0 "No Change", add
+la define pcf_lbl  1 "Increase", add
 la value pcf pcf_lbl
 
 * re-label "pc_pennyf"
@@ -43,7 +43,7 @@ la value pcf pcf_lbl
 * difference from pcf: 0 if price change < 1 LCU
 la var pc_pennyf "penny version of pcf: 0 = Changes <1 LCU"
 la define pc_pennyf_lbl -1 "Decrease >=1 LCU"
-la define pc_pennyf_lbl  0 "No Change", add  
+la define pc_pennyf_lbl  0 "No Change", add
 la define pc_pennyf_lbl  1 "Increase >=1 LCU", add
 la value pc_pennyf pc_pennyf_lbl
 
@@ -53,21 +53,21 @@ la value pc_pennyf pc_pennyf_lbl
 gen pc_allf = pcf + pc_pennyf
 la var pc_allf "combine pcf and pc_pennyf"
 la define pc_allf_lbl -2 "Decrease >=1 LCU"
-la define pc_allf_lbl -1 "Decrease <1 LCU", add  
-la define pc_allf_lbl  0 "No Change", add  
-la define pc_allf_lbl  1 "Increase < LCU", add  
-la define pc_allf_lbl  2 "Increase >=1 LCU", add 
+la define pc_allf_lbl -1 "Decrease <1 LCU", add
+la define pc_allf_lbl  0 "No Change", add
+la define pc_allf_lbl  1 "Increase < LCU", add
+la define pc_allf_lbl  2 "Increase >=1 LCU", add
 la value pc_allf pc_allf_lbl
 
 * deal with sorting variables second
 
 * re-label 'ccode2'
-la define ccode2_lbl 1 "US" 
-la define ccode2_lbl 2 "UK", add 
-la define ccode2_lbl 3 "Canada", add 
-la define ccode2_lbl 4 "France", add 
-la define ccode2_lbl 5 "Italy", add 
-la define ccode2_lbl 6 "Germany", add 
+la define ccode2_lbl 1 "US"
+la define ccode2_lbl 2 "UK", add
+la define ccode2_lbl 3 "Canada", add
+la define ccode2_lbl 4 "France", add
+la define ccode2_lbl 5 "Italy", add
+la define ccode2_lbl 6 "Germany", add
 la define ccode2_lbl 7 "Sweden", add
 la value ccode2 ccode2_lbl
 
@@ -77,11 +77,11 @@ la value ccode2 ccode2_lbl
 recode age (7/max = 7), gen(age7)
 la var age7 "age recode: 7/max = 7"
 la define age7_lbl 1 "1"
-la define age7_lbl 2 "2", add  
-la define age7_lbl 3 "3", add  
-la define age7_lbl 4 "4", add  
-la define age7_lbl 5 "5", add  
-la define age7_lbl 6 "6", add  
+la define age7_lbl 2 "2", add
+la define age7_lbl 3 "3", add
+la define age7_lbl 4 "4", add
+la define age7_lbl 5 "5", add
+la define age7_lbl 6 "6", add
 la define age7_lbl 7 "7+", add
 la value age7 age7_lbl
 
@@ -91,8 +91,8 @@ la value age7 age7_lbl
 recode ijtotal (3/max = 3), gen(ijtotal3)
 la var ijtotal3 "ijtotal recode: 3/max = 3"
 la define ijtotal3_lbl 1 "1"
-la define ijtotal3_lbl 2 "2", add  
-la define ijtotal3_lbl 3 "3+", add  
+la define ijtotal3_lbl 2 "2", add
+la define ijtotal3_lbl 3 "3+", add
 la value ijtotal3 ijtotal3_lbl
 
 * generate 'pchangef100'
@@ -149,7 +149,7 @@ tabout ///
 	sum cells(mean pchangef100) ///
 	style(tex) format(2) layout(cb) ptotal(single) ///
 	h1("Intensive Margins: Magnitudes of Price Changes By Directions (%)")
-	
+
 * ------------------------------------------------------------------------------
 * SUMMARY
 * ------------------------------------------------------------------------------
