@@ -35,11 +35,11 @@ xtset
 recode ijtotal (3/max = 3), gen(ijtotal3)
 la var ijtotal3 "ijtotal recode: 3/max = 3"
 la define ijtotal3_lbl 1 "1"
-la define ijtotal3_lbl 2 "2", add  
-la define ijtotal3_lbl 3 "3+", add  
+la define ijtotal3_lbl 2 "2", add
+la define ijtotal3_lbl 3 "3+", add
 la value ijtotal3 ijtotal3_lbl
 
-* generate value-added tax (VAT) change variables 
+* generate value-added tax (VAT) change variables
 gen vatchange=0
 replace vatchange=log(1.16)-log(1.13)  if c=="de" & y==2007
 replace vatchange=log(1.21)-log(1.20)  if c=="it" & y==2012
@@ -47,7 +47,7 @@ replace vatchange=log(1.22)-log(1.21)  if c=="it" & y==2013
 replace vatchange=log(1.20)-log(1.175) if c=="uk" & y==2012
 la var vatchange "VAT change: All"
 
-* generate individual value-added tax (VAT) change variables 
+* generate individual value-added tax (VAT) change variables
 gen vatchange_de=vatchange
 gen vatchange_it=vatchange
 gen vatchange_uk=vatchange
@@ -147,7 +147,7 @@ outreg2 [m1 m2 m3 m4 m5] ///
 	drop(pchangef) nonotes addnote( ///
 	Note: Standard errors in parentheses and t-Statistics in brackets, ///
 	Note: *** p<0.01; ** p<0.05; * p<0.1)
-	
+
 * (1) adding (3) vat: value-added tax
 outreg2 [m1 m6 m7 m8 m9 m10 m11] ///
 	using "`pathname'_vat.xls", replace tex ///
@@ -156,7 +156,7 @@ outreg2 [m1 m6 m7 m8 m9 m10 m11] ///
 	drop(pchangef) nonotes addnote( ///
 	Note: Standard errors in parentheses and t-Statistics in brackets, ///
 	Note: *** p<0.01; ** p<0.05; * p<0.1)
-	
+
 * (1) adding (4) li: lags and interactions of "base" variables
 outreg2 [m1 m12 m13 m14] ///
 	using "`pathname'_li.xls", replace tex ///
@@ -171,7 +171,7 @@ outreg2 [m1 m12 m13 m14] ///
 * ------------------------------------------------------------------------------
 
 * the "tex" option
-	
+
 * ------------------------------------------------------------------------------
 * SUMMARY
 * ------------------------------------------------------------------------------

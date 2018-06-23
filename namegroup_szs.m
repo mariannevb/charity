@@ -92,31 +92,31 @@ for iterlocation = 1:size(perlocation,1)
     else
         templast = perlocation(iterlocation-1,:);
     end
-    
+
     temprow = sorted(tempthis(:,1):tempthis(:,2),:);
     tempmat = sorted(templast(:,2)+1:tempthis(:,2),:);
-    
+
     % calculate average average of those observations
-    
+
     % keep information percentile, number of group,
     temprowper = per(iterlocation,:);
     tempmatper = per(iterlocation,:);
     temprownum = size(temprow,1);
     tempmatnum = size(tempmat,1);
-    
+
     % keep  (group index/size) average
     temprowsize = mean( temprow(:,2),1 );
     tempmatsize = mean( tempmat(:,2),1 );
-    
+
     % sum of variables (occu/freq/magn)
     temprowocc = sum( temprow(:,3:8), 1,'omitnan');
     tempmatocc = sum( tempmat(:,3:8), 1,'omitnan');
     temprowmag = mean( temprow(:,9:end), 1,'omitnan');
     tempmatmag = mean( tempmat(:,9:end), 1,'omitnan');
-    
+
     temprowfreq = temprowocc ./ sum(temprowocc,2);
     tempmatfreq = tempmatocc ./ sum(tempmatocc,2);
-    
+
     observationrow(iterlocation,:) = ...
         [temprowper,temprownum,temprowsize,temprowocc,temprowfreq,temprowmag];
     observationmat(iterlocation,:) = ...

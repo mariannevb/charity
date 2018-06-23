@@ -5,7 +5,7 @@
 % across countries within a group.
 
 clear
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/charity/code';
+cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 
 %%  Determine Global Parameters
 
@@ -84,26 +84,26 @@ coo.occ = NaN(size(coo.group,1),210);
 coo.mag = NaN(size(coo.group,1),210);
 
 for itergroup = 1:size(coo.group,1)
-    
+
     % locate the group in dataset
     tempgroup = coo.group(itergroup,1);
     templocat = (coo.groupall == tempgroup);
-    
+
     % get the pc indicators and levels of the group
     temppcind = coo.pcindicator( templocat,: );
     temppclev = coo.pclevel( templocat,: );
-    
+
     % get the country code of the group
     tempccode = coo.country( templocat,: );
-    
+
     % calcaulte of each price change pattern across countries
     [ tempocc,tempmag ] = ...
         coordination_coo( temppcind,temppclev,tempccode,0 );
-    
+
     %
     coo.occ(itergroup,:) = tempocc;
     coo.mag(itergroup,:) = tempmag;
-    
+
 end
 clearvars temp* iter*
 
@@ -146,17 +146,17 @@ cmp.occ = NaN(6,6);
 cmp.mag = NaN(6,6);
 
 for iterpcp = 1:6
-    
+
     % Select pattern
     temppattern = logical(cmp.pattern(:,iterpcp));
-    
+
     % Location of This Pattern and Difference Cross-Country Types
     tempeu = logical(cmp.type.eu .* temppattern);
     tempna = logical(cmp.type.na .* temppattern);
     tempno = logical(cmp.type.no .* temppattern);
     tempeuna = logical(cmp.type.euna .* temppattern);
     tempeuno = logical(cmp.type.euno .* temppattern);
-    
+
     % calculate occurrence
     % for one cross-country type, the occurrence under this pc-pattern
     % is the sum of all occurrences
@@ -168,7 +168,7 @@ for iterpcp = 1:6
         sum(sum(   coo.occ(:,tempeuno) ,1,'omitnan'),2,'omitnan'); ...
         sum(sum(   coo.occ(:,temppattern) ,1,'omitnan'),2,'omitnan'); ...
         ];
-    
+
     % calculate magnitude
     % for one cross-country type, the magnitude under this pc-pattern
     % is the average of all magnitudes
@@ -180,7 +180,7 @@ for iterpcp = 1:6
         mean(mean( coo.mag(:,tempeuno) ,1,'omitnan'),2,'omitnan'); ...
         mean(mean( coo.mag(:,temppattern) ,1,'omitnan'),2,'omitnan'); ...
         ];
-    
+
     %
     cmp.occ(:,iterpcp) = tempocc;
     cmp.mag(:,iterpcp) = tempmag;
