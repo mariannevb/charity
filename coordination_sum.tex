@@ -1,0 +1,94 @@
+
+\section*{Note}
+Some Abbreviation To Make Tables Look Cleaner
+\begin{align}
+\textbf{D}  & \qquad \text{Price Decrease}\\
+\textbf{U}  & \qquad \text{Price Unchange}\\ 
+\textbf{I}  & \qquad \text{Price Increase}\\ 
+\textbf{DD} & \qquad \text{Price Change Pair: D \& D}\\ 
+\textbf{UU} & \qquad \text{Price Change Pair: U \& U}\\ 
+\textbf{II} & \qquad \text{Price Change Pair: I \& I}\\ 
+\textbf{DU} & \qquad \text{Price Change Pair: D \& U}\\ 
+\textbf{UI} & \qquad \text{Price Change Pair: U \& I}\\ 
+\textbf{DI} & \qquad \text{Price Change Pair: D \& I}
+\end{align}
+
+\section*{Example}
+
+The idea is exactly the same. Suppose within a group, which is defined by (year, good-variety), there are 4 country observations.
+
+\begin{tabular}{cccc}
+	\hline\hline
+	Group & Country & PC Indicator &   PC Level   \\ \hline
+	  1   &   ca    &      D       &    -0.1     \\
+	  1   &   uk    &      D       &    -0.2     \\
+	  1   &   us    &      U       &     0.0     \\
+	  1   &   se    &   Missing    & $ \bullet $ \\ \hline\hline
+\end{tabular}
+
+Define a new indicator (called ID) by the multiplication of (Country, PC Indicator)
+
+\begin{tabular}{cccc}
+	\hline\hline
+	Group &        ID        &  PC Level   &  \\ \hline
+	  1   &   ID = ca * D    &    -0.1     &  \\
+	  1   &  ID = uk *   D   &    -0.2     &  \\
+	  1   &  ID = us *   U   &     0.0     &  \\
+	  1   & ID = se *Missing & $ \bullet $ &  \\ \hline\hline
+\end{tabular}
+
+I define the countries as 
+\begin{align}
+11=us, 13=uk, 17=ca, 19=fr, 23=it, 29=de, 31=se
+\end{align}
+and price-change indicators as 
+\begin{align}
+decrease=2, unchange=3, increase=5, missing=7.
+\end{align}
+As a result, for any price-change pair, there is a unique country-pair and a unique price-change-indicator-pair; therefore, for any price-change pair, I can classify it into different price-change patterns
+\begin{align}
+DD, UU,II,DU,UI,DI
+\end{align}
+and cross-country types
+\begin{align}
+EU, NA, NO, EU\&NA, EU\&NO
+\end{align}
+where
+\begin{itemize}
+	\item $ EU $ means that, the cross-country types are limited to be within Euro-Union region, i.e., $ 19=fr, 23=it, 29=de $.
+	\item $ NA $ means that, the cross-country types are limited to be within North-America region, i.e., $ 11=us, 17=ca $.
+	\item $ NO $ means that, the cross-country types are limited to be within Non-Euro-Union region, i.e., $ 11=us, 17=ca, 13=uk, 31=se $.
+	\item $ EU\&NA $ or $ EU\&NO $ means that, the cross-country types are one from the former and one from the latter.
+\end{itemize}
+
+\clearpage
+\begin{table}
+	\caption{Price Coordination and Currency Union}\label{tbl:coordination}
+	{\footnotesize This table demonstrates that, the price coordination is independent of currency unions. Across columns, the six difference price-change patterns are compared. In the panels (A)-(C), the variables of OCCURRENCE, FREQUENCY, and MAGNITUDE are tabulated. In each panel, the first three rows, EU, NA, and NO, show the within-region cross-country price coordination comparisons; the following two rows, EU\&NA, and EU\&NO, show the cross-region cross-country price coordination comparisons; the last row, ALL, shows the arbitrary cross-country price coordination comparisons.
+	\begin{tabular}{llrrrrrr}
+		\hline\hline
+		Region & Countries            &    DD &    UU &    II &    DU &    UI &    DI \\
+		       &                      &   (1) &   (2) &   (3) &   (4) &   (5) &   (6) \\ \hline\hline
+		\multicolumn{8}{l}{Panel (A): Occurrence}                                     \\ \hline
+		EU     & (FR,IT,DE)           &   984 & 14008 &  1603 &  2952 &  5675 &  1071 \\
+		NA     & (US,CA)              &   231 &  4849 &   317 &   994 &  1982 &   220 \\
+		NO     & (US,CA,UK,SE)        &  1291 & 24349 &  2848 &  5016 & 10750 &  1722 \\
+		EU\&NA & 1 From EU; 1 From NA &  1064 & 24042 &  2107 &  5471 &  9824 &  1414 \\
+		EU\&NO & 1 From EU; 1 From NO &  2880 & 49199 &  5205 & 11062 & 22392 &  3430 \\
+		ALL    &                      &  5155 & 87556 &  9656 & 19030 & 38817 &  6223 \\ \hline
+		\multicolumn{8}{l}{Panel (B): Frequency}                                      \\ \hline
+		EU     & (FR,IT,DE)           & 0.037 & 0.533 & 0.061 & 0.112 & 0.216 & 0.041 \\
+		NA     & (US,CA)              & 0.027 & 0.564 & 0.037 & 0.116 & 0.231 & 0.026 \\
+		NO     & (US,CA,UK,SE)        & 0.028 & 0.530 & 0.062 & 0.109 & 0.234 & 0.037 \\
+		EU\&NA & 1 From EU; 1 From NA & 0.024 & 0.547 & 0.048 & 0.125 & 0.224 & 0.032 \\
+		EU\&NO & 1 From EU; 1 From NO & 0.031 & 0.522 & 0.055 & 0.117 & 0.238 & 0.036 \\
+		ALL    &                      & 0.031 & 0.526 & 0.058 & 0.114 & 0.233 & 0.037 \\ \hline
+		\multicolumn{8}{l}{Panel (C): Magnitude}                                      \\ \hline
+		EU     & (FR,IT,DE)           & 0.097 & 0.000 & 0.108 & 0.140 & 0.107 & 0.222 \\
+		NA     & (US,CA)              & 0.126 & 0.000 & 0.164 & 0.171 & 0.157 & 0.344 \\
+		NO     & (US,CA,UK,SE)        & 0.118 & 0.000 & 0.142 & 0.158 & 0.148 & 0.295 \\
+		EU\&NA & 1 From EU; 1 From NA & 0.111 & 0.000 & 0.145 & 0.155 & 0.132 & 0.300 \\
+		EU\&NO & 1 From EU; 1 From NO & 0.111 & 0.000 & 0.136 & 0.152 & 0.126 & 0.274 \\
+		ALL    &                      & 0.111 & 0.000 & 0.133 & 0.152 & 0.130 & 0.272 \\ \hline\hline
+	\end{tabular}}
+\end{table}

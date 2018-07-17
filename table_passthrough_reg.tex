@@ -1,0 +1,135 @@
+
+\clearpage
+\begin{table}
+	\caption{Pass-through Regressions: Benchmark}\label{tbl:bench}
+	{\small This Table shows the pass-through regression results under benchmark specifications.
+	
+	\begin{tabular}{lccccc}
+		\hline\hline
+		& \multicolumn{5}{c}{Dependent Variable: Price Change ($ t $)} \\
+		                   &    (1)    &    (2)    &    (3)    &   (4)    &      (5)      \\ \hline\hline
+		infl\_lag          & 1.025***  & 0.990***  & 0.951***  & 0.955*** &   0.954***    \\
+		                   &  (0.06)   &  (0.06)   &  (0.06)   &  (0.06)  &    (0.06)     \\
+		                   &  [18.11]  &  [16.20]  &  [15.34]  & [15.42]  &    [15.40]    \\
+		depr\_eu\_lag      & 0.078***  & 0.071***  & 0.076***  & 0.077*** &   0.077***    \\
+		                   &  (0.01)   &  (0.01)   &  (0.01)   &  (0.01)  &    (0.01)     \\
+		                   &  [7.78]   &  [6.99]   &  [7.49]   &  [7.53]  &    [7.52]     \\
+		Constant           & -0.010*** & -0.009*** & -0.013*** &  -0.003  &    -0.003     \\
+		                   &  (0.00)   &  (0.00)   &  (0.00)   &  (0.00)  &    (0.00)     \\
+		                   &  [-7.89]  &  [-4.33]  &  [-6.22]  & [-1.16]  &    [-1.12]    \\ \hline
+		Country FE         &           &     Y     &     Y     &    Y     &       Y       \\
+		Age FE             &           &           &     Y     &    Y     &       Y       \\
+		Price Decile FE    &           &           &           &    Y     &       Y       \\
+		Variety FE         &           &           &           &          &       Y       \\ \hline
+		Adjusted R-squared &   0.009   &   0.012   &   0.015   &  0.017   &     0.017     \\
+		Observations       &  56,067   &  56,067   &  56,067   &  56,067  &    56,067     \\ \hline\hline
+	\end{tabular}
+\\Note: Standard errors in parentheses and t-Statistics in brackets
+\\Note: *** p$<$0.01; ** p$<$0.05; * p$<$0.1}
+\end{table}
+
+\clearpage
+\begin{table}
+	\caption{Pass-through Regressions: Value-Added Tax}\label{tbl:vat}
+	{\small This Table shows the pass-through regression results with Value-Added Tax (VAT) variables.
+		
+		\begin{tabular}{lccccccc}
+			\hline\hline
+			                   &           \multicolumn{7}{c}{Dependent Variable: Price Change ($ t $)}            \\
+			                   &    (1)    &    (2)    &    (3)    &    (4)    &    (5)    &    (6)    &    (7)    \\ \hline\hline
+			infl\_lag          & 1.025***  & 1.028***  & 0.992***  & 1.144***  & 0.921***  & 0.917***  & 1.053***  \\
+			                   &  (0.06)   &  (0.06)   &  (0.06)   &  (0.08)   &  (0.06)   &  (0.06)   &  (0.08)   \\
+			                   &  [18.11]  &  [18.15]  &  [17.48]  &  [14.33]  &  [15.98]  &  [15.55]  &  [12.62]  \\
+			depr\_eu\_lag      & 0.078***  & 0.076***  & 0.075***  & 0.099***  & 0.086***  & 0.086***  & 0.105***  \\
+			                   &  (0.01)   &  (0.01)   &  (0.01)   &  (0.01)   &  (0.01)   &  (0.01)   &  (0.01)   \\
+			                   &  [7.78]   &  [7.61]   &  [7.56]   &  [7.26]   &  [8.59]   &  [8.56]   &  [7.56]   \\\hline
+			vatchange          &           & -0.515*** & -0.496*** & -0.572*** &           &           &           \\
+			                   &           &  (0.14)   &  (0.14)   &  (0.20)   &           &           &           \\
+			                   &           &  [-3.78]  &  [-3.64]  &  [-2.90]  &           &           &           \\
+			L.vatchange        &           &           & 1.145***  & 0.708***  &           &           &           \\
+			                   &           &           &  (0.14)   &  (0.20)   &           &           &           \\
+			                   &           &           &  [8.48]   &  [3.52]   &           &           &           \\
+			L2.vatchange       &           &           &           & 1.340***  &           &           &           \\
+			                   &           &           &           &  (0.19)   &           &           &           \\
+			                   &           &           &           &  [7.04]   &           &           &           \\\hline
+			vatchange\_de      &           &           &           &           & -1.348*** & -1.313*** & -1.553*** \\
+			                   &           &           &           &           &  (0.17)   &  (0.17)   &  (0.25)   \\
+			                   &           &           &           &           &  [-8.06]  &  [-7.85]  &  [-6.16]  \\
+			vatchange\_it      &           &           &           &           &  -0.860*  &  -0.745   & -2.118*** \\
+			                   &           &           &           &           &  (0.50)   &  (0.54)   &  (0.79)   \\
+			                   &           &           &           &           &  [-1.73]  &  [-1.38]  &  [-2.68]  \\
+			vatchange\_uk      &           &           &           &           & 1.584***  & 1.631***  & 1.514***  \\
+			                   &           &           &           &           &  (0.26)   &  (0.26)   &  (0.35)   \\
+			                   &           &           &           &           &  [6.09]   &  [6.27]   &  [4.33]   \\
+			L.vatchange\_de    &           &           &           &           &           & 1.371***  & 0.796***  \\
+			                   &           &           &           &           &           &  (0.15)   &  (0.23)   \\
+			                   &           &           &           &           &           &  [9.16]   &  [3.47]   \\
+			L.vatchange\_it    &           &           &           &           &           &  -0.005   &  2.699**  \\
+			                   &           &           &           &           &           &  (0.65)   &  (1.37)   \\
+			                   &           &           &           &           &           &  [-0.01]  &  [1.97]   \\
+			L.vatchange\_uk    &           &           &           &           &           &   0.456   &  0.874*   \\
+			                   &           &           &           &           &           &  (0.34)   &  (0.46)   \\
+			                   &           &           &           &           &           &  [1.32]   &  [1.89]   \\
+			L2.vatchange\_de   &           &           &           &           &           &           & 1.651***  \\
+			                   &           &           &           &           &           &           &  (0.21)   \\
+			                   &           &           &           &           &           &           &  [7.77]   \\
+			L2.vatchange\_it   &           &           &           &           &           &           & -3.581**  \\
+			                   &           &           &           &           &           &           &  (1.72)   \\
+			                   &           &           &           &           &           &           &  [-2.08]  \\
+			L2.vatchange\_uk   &           &           &           &           &           &           &   0.591   \\
+			                   &           &           &           &           &           &           &  (0.44)   \\
+			                   &           &           &           &           &           &           &  [1.36]   \\\hline
+			Constant           & -0.010*** & -0.009*** & -0.010*** & -0.009*** & -0.007*** & -0.008*** & -0.007*** \\
+			                   &  (0.00)   &  (0.00)   &  (0.00)   &  (0.00)   &  (0.00)   &  (0.00)   &  (0.00)   \\
+			                   &  [-7.89]  &  [-7.52]  &  [-7.77]  &  [-5.17]  &  [-5.85]  &  [-6.45]  &  [-3.99]  \\ \hline
+			Adjusted R-squared &   0.009   &   0.009   &   0.011   &   0.014   &   0.011   &   0.012   &   0.016   \\
+			Observations       &  56,067   &  56,067   &  56,067   &  30,903   &  56,067   &  56,067   &  30,903   \\ \hline\hline
+		\end{tabular}
+		\\Note: Standard errors in parentheses and t-Statistics in brackets
+		\\Note: *** p$<$0.01; ** p$<$0.05; * p$<$0.1}
+\end{table}
+\clearpage
+\begin{table}
+\caption{Pass-through Regressions: Interactions}\label{tbl:inter}
+{\small This Table shows the pass-through regression results with interactions terms of lags of inflation and depreciation.
+	
+	\begin{tabular}{lcccc}
+		\hline\hline
+		                   & \multicolumn{4}{c}{Dependent Variable: Price Change ($ t $)} \\
+		                   &    (1)    &    (2)    &    (3)    &           (4)            \\ \hline
+		infl\_lag          & 1.025***  & 1.017***  & 1.039***  &         1.386***         \\
+		                   &  (0.06)   &  (0.06)   &  (0.06)   &          (0.09)          \\
+		                   &  [18.11]  &  [17.96]  &  [18.67]  &         [15.45]          \\
+		depr\_eu\_lag      & 0.078***  & 0.080***  & 0.038***  &          0.014           \\
+		                   &  (0.01)   &  (0.01)   &  (0.01)   &          (0.02)          \\
+		                   &  [7.78]   &  [8.02]   &  [3.56]   &          [0.77]          \\ \hline
+		square             &           & 0.286***  & 0.389***  &         0.554***         \\
+		                   &           &  (0.07)   &  (0.07)   &          (0.12)          \\
+		                   &           &  [3.98]   &  [5.27]   &          [4.75]          \\
+		L.infl\_lag        &           &           & 0.206***  &         0.280***         \\
+		                   &           &           &  (0.06)   &          (0.10)          \\
+		                   &           &           &  [3.32]   &          [2.80]          \\
+		L.depr\_eu\_lag    &           &           &  -0.008   &          0.001           \\
+		                   &           &           &  (0.01)   &          (0.02)          \\
+		                   &           &           &  [-0.70]  &          [0.04]          \\
+		square\_lag        &           &           & -0.464*** &        -0.779***         \\
+		                   &           &           &  (0.08)   &          (0.15)          \\
+		                   &           &           &  [-5.92]  &         [-5.12]          \\
+		L2.infl\_lag       &           &           &           &          -0.039          \\
+		                   &           &           &           &          (0.12)          \\
+		                   &           &           &           &         [-0.33]          \\
+		L2.depr\_eu\_lag   &           &           &           &          -0.021          \\
+		                   &           &           &           &          (0.02)          \\
+		                   &           &           &           &         [-1.06]          \\
+		square\_lag\_lag   &           &           &           &          -0.198          \\
+		                   &           &           &           &          (0.14)          \\
+		                   &           &           &           &         [-1.45]          \\ \hline
+		Constant           & -0.010*** & -0.011*** & -0.016*** &        -0.020***         \\
+		                   &  (0.00)   &  (0.00)   &  (0.00)   &          (0.00)          \\
+		                   &  [-7.89]  &  [-8.50]  &  [-9.10]  &         [-5.72]          \\ \hline
+		Adjusted R-squared &   0.009   &   0.009   &   0.011   &          0.019           \\
+		Observations       &  56,067   &  56,067   &  47,625   &          20,290          \\ \hline\hline
+	\end{tabular}
+	\\Note: Standard errors in parentheses and t-Statistics in brackets
+	\\Note: *** p$<$0.01; ** p$<$0.05; * p$<$0.1}
+\end{table}

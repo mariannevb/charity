@@ -3,7 +3,7 @@
 % The script studies the price change patterns within a group.
 
 clear
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/charity/charity';
+cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 
 %%  Determine Global Parameters
 
@@ -14,82 +14,88 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/charity/charity';
 % (name,country,year):                  4;
 
 % which measure
-% pcf&pchangef:                 pcK =   1;
-% pc_pennyf&pchange_pennyf:             2;
-% pcb&pchangeb:                         3;
-% pc_pennyb&pchange_pennyb:             4;
-% pcraw&pchangeraw:                     5;
-% pc_pennyraw&pchange_pennyraw:         6;
+% pcf        & pchangef:        pcK =   1;
+% pc_pennyf  & pchange_pennyf:          2;
+% pc_allf    & pchange_allf:            3;
+% pc_unitf   & pchange_unitf:           4;
+
+% conditional calculation
+% treat impossible as missing:  con =   1;
+% unconditional:                        0;
 
 % want variable name
 % variable name in first row:   head =  1;
 % numerical values only:                0;
 
-% path to save output
+% here to save output
 % specify string
 
-global gpK pcK head path
+global con gpK pcK head here
+con     = 1;
 gpK     = 4;
-pcK     = 1;
+pcK     = 4;
 head    = 1;
-path    = '../output/namegroup';
+here    = '../output/namegroup';
 
 %%  Import Data                                                       (raw)
 
 tempdata = readtable('../output/namegroup_data.xlsx');
 
 raw.var = tempdata.Properties.VariableNames';
-raw.num = [tempdata.nname, table2array(tempdata(:,2:end))];
-
+raw.num = [ tempdata.nname, table2array(tempdata(:,2:end)) ];
 clearvars temp* iter*
 
-%%  Identify The Group To Analyze                                    (data)
+% separate dataset into three types variables
+% (1) id - identification variables: name, country, year, good-variety
+% (2) gp - group definition variables: group, size, index
+% (3) pc - price change indicators and levels variables: 99 versions
+raw.id = raw.num(:, 1: 4);
+raw.gp = raw.num(:, 5:16);
+raw.pc = raw.num(:,25:32);
 
-% determine which group want to use
-% (name):               k = 1;  Columns [5, 9,10] in raw.num
-% (name,country):           2;  Columns [6,11,12]
-% (name,year):              3;  Columns [7,13,14]
-% (name,country,year):      4;  Columns [8,15,16]
-data.k = gpK;
+%%  Initialize Main Dataset                                          (data)
 
 % unique id of each observation
-% [name, country, year, good(ij)]
-data.id = raw.num(:,1:4);
+% 1st column: name
+% 2nd column: country
+% 3rd column: year
+% 4th column: good-variety
+data.id = raw.id;
 
-% group id that determine the subset to analyze
-% first col:    index of group;
-% second col:   number of observations within group
-% third col:    index of observation within group
-data.gp = raw.num(:,[data.k+4,data.k*2+7,data.k*2+8]);
+% group definition that determines the subset to analyze
+% 1st column: index of group
+% 2nd column: number of observations within group
+% 3rd column: index of observation within group
+data.gp = raw.gp(:,(gpK*3-2):(gpK*3));
 
 % price change variables
-% [pcf, pc_pennyf, pchangef, pchange_pennyf]
-% recoded to ..._99
-data.pc = raw.num(:,end-3:end);
+% 1st column: price change indicators
+% 2nd column: price change levels
+data.pc = raw.pc(:,(pcK*2-1):(pcK*2));
 
 %%  Find Within Group Price Change Pattern                            (pcp)
 
-% determine which set of price change (indicator-level) want to use
-% pcf-pchangef:             k = 1;  Columns [1,3] in data.pc
-% pc_pennyf-pchange_pennyf:     2;  Columns [2,4]
-pcp.k = pcK;
-
-% change this if
-% 1) want to use other groups
-% 2) want to use other price chagne measure
+% initialization of price change pattern analysis
 pcp.group       = unique(data.gp(:,1));
 pcp.groupall    = data.gp(:,1);
-pcp.pcindicator = data.pc(:,pcp.k);
-pcp.pclevel     = data.pc(:,pcp.k+2);
+pcp.pcindicator = data.pc(:,1);
+pcp.pclevel     = data.pc(:,2);
 
-% preallocation of occurrence, frequency, magnitude
-% the columns are price change patterns: [DD UU II DU UI DI]
-% where D: Decrease; U: Unchange; I: Increase
-% occurerence has an extra column: MISSING price change variables
-% frequency has an extra column: ratio of non-missing/missing occurrences
-pcp.occ = NaN(size(pcp.group,1),6);
-% pcp.frequency = NaN(size(pcp.group,1),6+1);
-pcp.mag = NaN(size(pcp.group,1),6);
+% preallocation of LOC (location) OCC (occurrence) MAG (magnitude)
+% D - decrease ; I - increase ; N - nochange ;
+
+% store (LOC OCC MAG) in 9 columns as follows:
+% 1st - 3rd columns : price change patterns      :  D,  I,  N
+% 4th - 9th columns : price change pair patterns : DD, II, DN, IN, DI, NN
+
+% LOC is indicator of existing patterns
+% OCC is counted using conditional version
+% MAG is stored as total value
+% see namegroup_pcp.m
+
+pcp.loc = NaN(size(pcp.group,1),9);
+pcp.occ = NaN(size(pcp.group,1),9);
+pcp.mag = NaN(size(pcp.group,1),9);
 
 for itergroup = 1:size(pcp.group,1)
 
@@ -102,98 +108,53 @@ for itergroup = 1:size(pcp.group,1)
     temppclev = pcp.pclevel( templocat,: );
 
     % calcaulte of each price change pattern: frequency and magnitude
-    [ tempocc,tempmag ] = namegroup_pcp( temppcind,temppclev,0 );
+    [ temploc,tempocc,tempmag ] = namegroup_pcp( temppcind,temppclev,con );
 
-    %
+    % output
+    pcp.loc(itergroup,:) = temploc;
     pcp.occ(itergroup,:) = tempocc;
     pcp.mag(itergroup,:) = tempmag;
 
 end
 clearvars temp* iter*
 
-% Output the Price Change Pattern Variables
-pcp.head = head;
-pcp.path = path;
-
+% Output each group OCC and MAG across all patterns
 pcp.tblocc = array2table([pcp.group,pcp.occ], ...
-    'VariableNames',{'group';'DD';'UU';'II';'DU';'UI';'DI';});
-% pcp.tblf = array2table([pcp.group,pcp.frequency], ...
-%     'VariableNames',{'group';'DD';'UU';'II';'DU';'UI';'DI';'RATIO'});
+    'VariableNames',{'OCC';'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';});
 pcp.tblmag = array2table([pcp.group,pcp.mag], ...
-    'VariableNames',{'group';'DD';'UU';'II';'DU';'UI';'DI';});
+    'VariableNames',{'MAG';'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';});
+writetable(pcp.tblocc,[here,'_pcp.xlsx' ], ...
+    'WriteVariableNames',head,'Sheet', 'occ');
+writetable(pcp.tblmag,[here,'_pcp.xlsx' ], ...
+    'WriteVariableNames',head,'Sheet', 'mag');
 
-writetable(pcp.tblocc,[pcp.path,'_pcp.xlsx' ], ...
-    'WriteVariableNames',pcp.head,'Sheet', 'occu');
-% writetable(pcp.tblf,[pcp.path,'_pcp.xlsx' ], ...
-%     'WriteVariableNames',pcp.head,'Sheet', 'freq');
-writetable(pcp.tblmag,[pcp.path,'_pcp.xlsx' ], ...
-     'WriteVariableNames',pcp.head,'Sheet', 'magn');
-%
-% Provide Some Statistics of the Price Change Pattern Variables
-pcp.num = [ pcp.occ,pcp.mag];
-pcp.statmean = reshape( (mean(pcp.num,1,'omitnan'))',[6,2])';
-pcp.statstd = reshape( (std(pcp.num,1,'omitnan'))',[6,2])';
-pcp.statobs = sum(~isnan(pcp.num(:,7:12)),1);
+% calculatte average DIN magnitude across all patterns
+% D=decrease; I=increase; N=no-change
+pcp.avgdin = namegroup_din( pcp.loc,pcp.occ,pcp.mag );
 
-pcp.stat = [pcp.statmean;pcp.statstd;pcp.statobs];
-pcp.stattbl = array2table( ...
-    round(pcp.stat,3), ...
-    'VariableNames',{'DD';'UU';'II';'DU';'UI';'DI';}, ...
-    'RowNames',{ ...
-    'MEAN Occurrence';'MEAN Magnitude'; ...
-    'STD of Occurrence';'STD of Magnitude'; ...
-    'Number of OBS'; ...
-    });
+% calculate total occurrence and average magnitude across all patterns
+pcp.totocc = sum( pcp.occ, 1,'omitnan' );
+pcp.avgmag = sum( pcp.mag, 1,'omitnan' ) ./ pcp.totocc;
 
-disp('-------------------------------------------------------------------')
-disp('[COL]     D: Decrease;        U: Unchange;        I: Increase      ')
-disp('[ROW]     o: occurrence;                          m: magnitude     ')
-disp(pcp.stattbl);
-disp('-------------------------------------------------------------------')
+% calculate total frequency across all patterns
+pcp.totfrq = [ ...
+    pcp.totocc(:,1:3) ./ sum( pcp.totocc(:,1:3) ),...
+    pcp.totocc(:,4:9) ./ sum( pcp.totocc(:,4:9) ),...
+    ];
+
+% Output all groups OCC and MAG across all patterns
+pcp.stat = [ pcp.totocc;pcp.totfrq;pcp.avgmag;pcp.avgdin; ];
+pcp.stattbl = array2table( pcp.stat, ...
+    'VariableNames',{'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';}, ...
+    'RowNames',{'OCC';'FREQ';'MAG';'AVGD';'AVGI';'AVGN';});
+writetable(pcp.stattbl,[here,'_pcp.xlsx' ], ...
+    'WriteVariableNames',head,'Sheet', 'stat');
 
 % Latex Code
-mat2tex( pcp.stat,'%.2f','nomath' )
-
-%%  Construct New Dataset With occu/freq/magn                         (new)
-
-new.newdata = pcp.num;
-new.rawdata = raw.num;
-
-% repeat each row (group) of the pcpdata x times,
-% where x = number of observations within that group
-% to get x, cannot just compress 'data.gp(:,2)'
-% so
-% 1) find first-apperience location of 'pcp.group' in 'pcp.groupall'
-% 2) locate the x by this 'new.locate' in 'data.gp(:,2)'
-[~,new.locate] = ismember(unique(data.gp(:,1)),data.gp(:,1),'rows');
-new.repeart = data.gp(new.locate,2);
-new.adddata = repelem(new.newdata,new.repeart,1);
-
-new.rawname = raw.var;
-new.addname = { ...
-    'DD_o';'UU_o';'II_o';'DU_o';'UI_o';'DI_o'; ...
-    'DD_m';'UU_m';'II_m';'DU_m';'UI_m';'DI_m'; ...
-    };
-
-% Output New Dataset
-new.head = head;
-new.path = path;
-
-new.num = [new.rawdata,new.adddata];
-new.tblnew = array2table(new.num, ...
-    'VariableNames',[new.rawname;new.addname]);
-new.tblold = array2table(new.rawdata, ...
-    'VariableNames',new.rawname);
-
-writetable(new.tblnew,[new.path,'_all.xlsx'], ...
-    'WriteVariableNames',new.head,'Sheet', 'new');
-writetable(new.tblold,[new.path,'_all.xlsx'], ...
-    'WriteVariableNames',new.head,'Sheet', 'old');
+pcp.tex = mat2tex( pcp.stat,'%.3f','nomath' );
+disp(pcp.tex);
 
 %%  Study Price Change Patterns Across Sizes of Groups                (szs)
-
-szs.head = head;
-szs.path = path;
 
 % locate where each group is first-appeared in original dataset
 [~,szs.locate] = ismember(unique(data.gp(:,1)),data.gp(:,1),'rows');
@@ -202,7 +163,7 @@ szs.path = path;
 % 1) the group variables: group index,size
 % 2) the price change patterns (pcp) variables of groups: occ/mag
 szs.rawdata = data.gp(szs.locate,1:2);
-szs.newdata = pcp.num;
+szs.newdata = [ pcp.occ,pcp.mag, ];
 szs.dataset = [ szs.rawdata,szs.newdata ];
 
 % specify the percentiles of interest
@@ -216,28 +177,38 @@ szs.sorting = 2;
     namegroup_szs( szs.percentile,szs.sorting,szs.dataset );
 
 % construct output tables
-szs.tblr = array2table( szs.obsrow, ...
-    'VariableNames',{
-    'PERCENTILE';'GROUPOBS';'GROUPSIZE';
-    'DD_o';'UU_o';'II_o';'DU_o';'UI_o';'DI_o'; ...
-    'DD_f';'UU_f';'II_f';'DU_f';'UI_f';'DI_f'; ...
-    'DD_m';'UU_m';'II_m';'DU_m';'UI_m';'DI_m'; ...
-    });
-szs.tblm = array2table( szs.obsmat, ...
-    'VariableNames',{
-    'PERCENTILE';'GROUPOBS';'GROUPSIZE';
-    'DD_o';'UU_o';'II_o';'DU_o';'UI_o';'DI_o'; ...
-    'DD_f';'UU_f';'II_f';'DU_f';'UI_f';'DI_f'; ...
-    'DD_m';'UU_m';'II_m';'DU_m';'UI_m';'DI_m'; ...
-    });
+szs.varnames = {
+    'PERCENTILE';'NUMOBS';'SIZE'; ...
+    ...
+    'OCC_D';'OCC_I';'OCC_N'; ...
+    'OCC_DD';'OCC_II';'OCC_DN';'OCC_IN';'OCC_DI';'OCC_NN'; ...
+    ...
+    'FREQ_D';'FREQ_I';'FREQ_N'; ...
+    'FREQ_DD';'FREQ_II';'FREQ_DN';'FREQ_IN';'FREQ_DI';'FREQ_NN'; ...
+    ...
+    'MAG_D';'MAG_I';'MAG_N'; ...
+    'MAG_DD';'MAG_II';'MAG_DN';'MAG_IN';'MAG_DI';'MAG_NN'; ...
+    ...
+    'AVGD_D';'AVGD_I';'AVGD_N'; ...
+    'AVGD_DD';'AVGD_II';'AVGD_DN';'AVGD_IN';'AVGD_DI';'AVGD_NN'; ...
+    ...
+    'AVGI_D';'AVGI_I';'AVGI_N'; ...
+    'AVGI_DD';'AVGI_II';'AVGI_DN';'AVGI_IN';'AVGI_DI';'AVGI_NN'; ...
+    ...
+    'AVGN_D';'AVGN_I';'AVGN_N'; ...
+    'AVGN_DD';'AVGN_II';'AVGN_DN';'AVGN_IN';'AVGN_DI';'AVGN_NN'; ...
+    };
+szs.tblrow = array2table( szs.obsrow,'VariableNames',szs.varnames);
+szs.tblmat = array2table( szs.obsmat,'VariableNames',szs.varnames);
 
-writetable(szs.tblr,[szs.path,'_szs.xlsx'], ...
-    'WriteVariableNames',szs.head,'Sheet', 'row');
-writetable(szs.tblm,[szs.path,'_szs.xlsx'], ...
-    'WriteVariableNames',szs.head,'Sheet', 'mat');
+writetable(szs.tblrow,[here,'_szs.xlsx'], ...
+    'WriteVariableNames',head,'Sheet', 'at');
+writetable(szs.tblmat,[here,'_szs.xlsx'], ...
+    'WriteVariableNames',head,'Sheet', 'between');
 
 % Latex Code
-mat2tex( [ szs.obsrow;szs.obsmat ],'%.2f','nomath' );
+szs.tex = mat2tex( [ szs.obsrow;szs.obsmat ],'%.3f','nomath' );
+disp(szs.tex);
 
 %%  Save Dataset
-save([path,'_data']);
+save([here,'_data']);

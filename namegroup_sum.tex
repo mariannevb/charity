@@ -1,0 +1,204 @@
+
+\section*{Note}
+Abbreviation of Price Change Pattern
+
+\begin{tabular}{ll}
+	\hline\hline
+	Symbol & Definition                          \\ \hline
+	D      & Uni-price-change pattern: Decrease  \\
+	I      & Uni-price-change pattern: Increase  \\
+	N      & Uni-price-change pattern: No Change \\ \hline
+	DD     & Bi-price-change pattern             \\
+	II     & Bi-price-change pattern             \\
+	DN     & Bi-price-change pattern             \\
+	IN     & Bi-price-change pattern             \\
+	DI     & Bi-price-change pattern             \\
+	UU     & Bi-price-change pattern             \\ \hline\hline
+\end{tabular}
+
+\section*{Example}
+
+The following example shows the key definitions. Suppose the original dataset as follows. Within Group-1, there are 4 good-variety observations.
+
+\begin{tabular}{cccc}
+	\hline\hline
+	Group & Good-Variety & Indicator &    Level    \\ \hline
+	1   &      1       &     D     &    -0.1     \\
+	1   &      2       &     D     &    -0.2     \\
+	1   &      3       &     U     &     0.0     \\
+	1   &      4       &  Missing  & $ \bullet $ \\ \hline\hline
+\end{tabular}
+
+Then there are totally $ 3 $ unique uni-price-change.
+
+\begin{tabular}{cccc}
+	\hline\hline
+	Group & Good-Variety & Indicator &      Level       \\ \hline
+	1   &      1       &     D     & $ |-0.1| = 0.1 $ \\
+	1   &      2       &     D     & $ |-0.2| = 0.2 $ \\
+	1   &      3       &     U     &       0.0        \\ \hline\hline
+\end{tabular}
+
+And there are totally $ 6 $ unique bi-price-change pair combinations.
+
+\begin{tabular}{cccc}
+	\hline\hline
+	Group & Good-Variety Pair & Indicator Pair &       Level Pair        \\ \hline
+	1   &       1, 2        &      D, D      & $ |-0.1-(-0.2)| = 0.1 $ \\
+	1   &       1, 3        &      D, U      & $ |-0.1-(0.0)| = 0.1 $  \\
+	1   &       1, 4        &   D, Missing   &       $ \bullet $       \\
+	1   &       2, 3        &      D, U      & $ |-0.2-(0.0)| = 0.2 $  \\
+	1   &       2, 4        &   D, Missing   &       $ \bullet $       \\
+	1   &       3, 4        &   U, Missing   &       $ \bullet $       \\ \hline\hline
+\end{tabular}
+
+To Be Finished.
+
+\listoftables
+
+\clearpage
+\begin{table}
+	\caption{Summary Statistics Of Price Change Patterns}\label{tbl:summary}
+	{
+		\footnotesize This table reports the summary statistics of OCCURRENCE and MAGNITUDE. In panel (A), the conditional version is used, and in panel (B), the unconditional version is used. The columns (1)-(6) are the six price-change patterns of interest. I choose to report the means and standard deviations. Note that, the MAGNITUDE isnot affected whether the conditional or unconditional version is used. Note also that, since the CONDITIONAL version of OCCURRENCE definition creates ``holes'' at 0s, it gives a much higher average of OCCURRENCE.
+		\begin{tabular}{lrrrrrrrrrrr}
+			\hline\hline
+			Variables/Statistics     &     D &     I &     N &       &    DD &    II &    DN &    IN &    DI &     NN &       \\
+			                         &   (1) &   (2) &   (3) &       &   (4) &   (5) &   (6) &   (7) &   (8) &    (9) &       \\ \hline\hline
+			Occurrence               &  1135 &  2642 & 41724 &       &  1161 &  3458 &  5570 & 13178 &  1179 & 262420 &       \\
+			Frequency                & 0.025 & 0.058 & 0.917 & 1.000 & 0.004 & 0.012 & 0.019 & 0.046 & 0.004 &  0.914 & 1.000 \\
+			Magnitude                & 0.068 & 0.052 & 0.000 &       & 0.027 & 0.034 & 0.061 & 0.057 & 0.121 &  0.000 &       \\ \hline
+			Average Level: Decrease  & 0.068 &    -- &    -- &       & 0.068 &    -- & 0.066 &    -- & 0.075 &     -- &       \\
+			Average Level: Increase  &    -- & 0.052 &    -- &       &    -- & 0.051 &    -- & 0.053 & 0.059 &     -- &       \\
+			Average Level: No Change &    -- &    -- & 0.000 &       &    -- &    -- & 0.000 & 0.000 &    -- &  0.000 &       \\ \hline\hline
+		\end{tabular}
+	}
+\end{table}
+
+\begin{table}
+	\caption{Price Change Patterns Across Group Characteristic: Size}\label{tbl:size}
+	{
+		\footnotesize This table shows the occurrence of price-change patterns across the size of the group. The group is defined by unique (name,country,year) tuple; the size of group is defined as the number of unique (good-variety) elements. In the first row, the percentiles of interest are given; in the second row, the average sizes of groups are given. In panel (A), in calculation, only the groups at the 1-percentile are used; for example, in column (2) with percentile 60, only the groups within the percentil range of $ (59,60] $ are included. Therefore, the \# of groups in the third row is the same. In panel (B), the groups within this percentile and last percentile are used; again in column (2) with percentile 60, the groups within the percentil range of $ (50,60] $ are included. Hence, the \# of groups in the third row are determined by percentile differences. In the subpanels, the OCCURRENCE, FREQUENCY, and MAGNITUDE are given across different price-change patterns. The OCCURRENCE in the subpanel (1)s are the sum of occurrence across groups; the FREQUENCY in the subpanel (2)s are calculated from OCCURRENCE; the MAGNITUDE in the subpanel (3)s are the average magnitudes across groups (the sum of magnitudes does not have a clear interpretation since magnitudes are difference in price-change returns).
+		
+	}
+\end{table}
+
+\clearpage
+{\footnotesize \begin{tabular}{lrrrrrrrrrr}
+\hline\hline
+&   (1) &   (2) &   (3) &   (4) &    (5) &    (6) &    (7) &    (8) &    (9) &   (10) \\ \hline\hline
+\multicolumn{11}{c}{Panel (A) AT Percentile}                         \\ \hline\hline
+\%-ile &    50 &    60 &    70 &    80 &     90 &     92 &     94 &     96 &     98 &    100 \\
+\#     &   194 &   194 &   194 &   194 &    194 &    194 &    194 &    195 &    194 &    195 \\
+Size   & 3.000 & 4.000 & 5.000 & 7.000 & 13.412 & 15.521 & 19.072 & 24.677 & 34.778 & 75.487 \\ \hline
+\multicolumn{11}{l}{Subpanel (1) Occurrence}                                                 \\ \hline
+D      &    20 &    13 &    15 &    11 &     27 &     23 &     39 &     29 &     93 &     53 \\
+I      &    31 &    50 &    31 &    44 &     56 &     53 &     98 &     56 &    146 &    134 \\
+N      &   121 &   275 &   349 &   351 &    832 &    916 &   1485 &   1590 &   2515 &   5322 \\
+DD     &    11 &     3 &     6 &     8 &     28 &     21 &     35 &     39 &    134 &     91 \\
+II     &    16 &    48 &    23 &    28 &     74 &     73 &    153 &     77 &    361 &    374 \\
+DN     &    13 &    15 &    12 &     6 &    131 &     84 &    228 &    256 &   1000 &   1283 \\
+IN     &    14 &    24 &    35 &    55 &    276 &    305 &    529 &    506 &   1754 &   3615 \\
+DI     &     0 &     4 &     6 &    10 &     27 &     78 &     61 &     22 &    294 &    204 \\
+NN     &    61 &   285 &   430 &   565 &   3287 &   4214 &   7756 &  10697 &  22881 & 101216 \\ \hline
+\multicolumn{11}{l}{Subpanel (2) Frequency}                                                  \\ \hline
+D      & 0.116 & 0.038 & 0.038 & 0.027 &  0.030 &  0.023 &  0.024 &  0.017 &  0.034 &  0.010 \\
+I      & 0.180 & 0.148 & 0.078 & 0.108 &  0.061 &  0.053 &  0.060 &  0.033 &  0.053 &  0.024 \\
+N      & 0.703 & 0.814 & 0.884 & 0.865 &  0.909 &  0.923 &  0.916 &  0.949 &  0.913 &  0.966 \\
+DD     & 0.096 & 0.008 & 0.012 & 0.012 &  0.007 &  0.004 &  0.004 &  0.003 &  0.005 &  0.001 \\
+II     & 0.139 & 0.127 & 0.045 & 0.042 &  0.019 &  0.015 &  0.017 &  0.007 &  0.014 &  0.004 \\
+DN     & 0.113 & 0.040 & 0.023 & 0.009 &  0.034 &  0.018 &  0.026 &  0.022 &  0.038 &  0.012 \\
+IN     & 0.122 & 0.063 & 0.068 & 0.082 &  0.072 &  0.064 &  0.060 &  0.044 &  0.066 &  0.034 \\
+DI     & 0.000 & 0.011 & 0.012 & 0.015 &  0.007 &  0.016 &  0.007 &  0.002 &  0.011 &  0.002 \\
+NN     & 0.530 & 0.752 & 0.840 & 0.841 &  0.860 &  0.883 &  0.885 &  0.922 &  0.866 &  0.948 \\ \hline
+\multicolumn{11}{l}{Subpanel (3) Magnitude}                                                  \\ \hline
+D      & 0.234 & 0.083 & 0.108 & 0.092 &  0.105 &  0.024 &  0.055 &  0.058 &  0.081 &  0.055 \\
+I      & 0.149 & 0.106 & 0.021 & 0.067 &  0.111 &  0.028 &  0.030 &  0.035 &  0.053 &  0.081 \\
+N      & 0.000 & 0.000 & 0.000 & 0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 \\
+DD     & 0.041 & 0.093 & 0.004 & 0.154 &  0.054 &  0.046 &  0.009 &  0.025 &  0.058 &  0.012 \\
+II     & 0.008 & 0.015 & 0.007 & 0.024 &  0.169 &  0.016 &  0.013 &  0.046 &  0.046 &  0.057 \\
+DN     & 0.283 & 0.079 & 0.105 & 0.001 &  0.139 &  0.025 &  0.057 &  0.066 &  0.083 &  0.062 \\
+IN     & 0.050 & 0.160 & 0.030 & 0.078 &  0.134 &  0.029 &  0.029 &  0.034 &  0.057 &  0.078 \\
+DI     &    -- & 0.139 & 0.172 & 0.310 &  0.246 &  0.055 &  0.078 &  0.065 &  0.123 &  0.090 \\
+NN     & 0.000 & 0.000 & 0.000 & 0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 \\ \hline
+\multicolumn{11}{l}{Subpanel (4) ABS Level: Decrease}                                        \\ \hline
+D      & 0.234 & 0.083 & 0.108 & 0.092 &  0.105 &  0.024 &  0.055 &  0.058 &  0.081 &  0.055 \\
+I      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+N      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DD     & 0.205 & 0.105 & 0.109 & 0.102 &  0.121 &  0.028 &  0.037 &  0.062 &  0.081 &  0.034 \\
+II     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DN     & 0.275 & 0.098 & 0.094 & 0.002 &  0.123 &  0.021 &  0.055 &  0.060 &  0.081 &  0.055 \\
+IN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DI     &    -- & 0.047 & 0.132 & 0.126 &  0.173 &  0.024 &  0.061 &  0.035 &  0.081 &  0.058 \\
+NN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\ \hline
+\multicolumn{11}{l}{Subpanel (5) ABS Level: Increase}                                        \\ \hline
+D      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+I      & 0.149 & 0.106 & 0.021 & 0.067 &  0.111 &  0.028 &  0.030 &  0.035 &  0.053 &  0.081 \\
+N      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DD     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+II     & 0.175 & 0.101 & 0.016 & 0.063 &  0.106 &  0.032 &  0.028 &  0.035 &  0.055 &  0.079 \\
+DN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+IN     & 0.054 & 0.163 & 0.029 & 0.064 &  0.111 &  0.031 &  0.031 &  0.035 &  0.053 &  0.081 \\
+DI     &    -- & 0.092 & 0.033 & 0.200 &  0.123 &  0.035 &  0.029 &  0.021 &  0.063 &  0.069 \\
+NN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\ \hline\hline
+\end{tabular}}
+
+\clearpage
+{\footnotesize \begin{tabular}{lrrrrrrrrrr}
+\hline\hline
+&   (1) &   (2) &   (3) &   (4) &    (5) &    (6) &    (7) &    (8) &    (9) &   (10) \\ \hline\hline
+\multicolumn{11}{c}{Panel (B) BETWEEN Percentile}                       \\ \hline\hline
+\%-ile &    50 &    60 &    70 &    80 &     90 &     92 &     94 &     96 &     98 &    100 \\
+\#     &  9711 &  1942 &  1942 &  1942 &   1942 &    389 &    388 &    389 &    388 &    389 \\
+Size   & 2.234 & 3.269 & 4.204 & 5.889 & 10.007 & 15.005 & 18.057 & 23.082 & 31.724 & 60.802 \\ \hline
+\multicolumn{11}{l}{Subpanel (1) Occurrence}                                                 \\ \hline
+D      &   299 &    70 &    97 &   118 &    156 &     41 &     61 &     58 &    110 &    125 \\
+I      &   623 &   215 &   231 &   272 &    336 &    103 &    199 &    100 &    277 &    286 \\
+N      &  6925 &  2003 &  2302 &  3208 &   5944 &   1932 &   2707 &   3029 &   4554 &   9120 \\
+DD     &    75 &    25 &    33 &    66 &    129 &     66 &     50 &     77 &    141 &    499 \\
+II     &   151 &   115 &   116 &   183 &    290 &    136 &    354 &    122 &    670 &   1321 \\
+DN     &   117 &    40 &   108 &   116 &    409 &    153 &    351 &    432 &   1160 &   2684 \\
+IN     &   243 &   109 &   179 &   298 &   1049 &    604 &   1046 &    829 &   3091 &   5730 \\
+DI     &    24 &    23 &    24 &    60 &    101 &     86 &    116 &     51 &    356 &    338 \\
+NN     &  2753 &  1442 &  2259 &  4400 &  16221 &   8574 &  13496 &  19565 &  38692 & 155018 \\ \hline
+\multicolumn{11}{l}{Subpanel (2) Frequency}                                                  \\ \hline
+D      & 0.038 & 0.031 & 0.037 & 0.033 &  0.024 &  0.020 &  0.021 &  0.018 &  0.022 &  0.013 \\
+I      & 0.079 & 0.094 & 0.088 & 0.076 &  0.052 &  0.050 &  0.067 &  0.031 &  0.056 &  0.030 \\
+N      & 0.883 & 0.875 & 0.875 & 0.892 &  0.924 &  0.931 &  0.912 &  0.950 &  0.922 &  0.957 \\
+DD     & 0.022 & 0.014 & 0.012 & 0.013 &  0.007 &  0.007 &  0.003 &  0.004 &  0.003 &  0.003 \\
+II     & 0.045 & 0.066 & 0.043 & 0.036 &  0.016 &  0.014 &  0.023 &  0.006 &  0.015 &  0.008 \\
+DN     & 0.035 & 0.023 & 0.040 & 0.023 &  0.022 &  0.016 &  0.023 &  0.020 &  0.026 &  0.016 \\
+IN     & 0.072 & 0.062 & 0.066 & 0.058 &  0.058 &  0.063 &  0.068 &  0.039 &  0.070 &  0.035 \\
+DI     & 0.007 & 0.013 & 0.009 & 0.012 &  0.006 &  0.009 &  0.008 &  0.002 &  0.008 &  0.002 \\
+NN     & 0.819 & 0.822 & 0.831 & 0.859 &  0.891 &  0.891 &  0.876 &  0.928 &  0.877 &  0.936 \\ \hline
+\multicolumn{11}{l}{Subpanel (3) Magnitude}                                                  \\ \hline
+D      & 0.073 & 0.070 & 0.070 & 0.073 &  0.071 &  0.041 &  0.056 &  0.071 &  0.075 &  0.051 \\
+I      & 0.051 & 0.059 & 0.047 & 0.066 &  0.051 &  0.032 &  0.037 &  0.039 &  0.057 &  0.060 \\
+N      & 0.000 & 0.000 & 0.000 & 0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 \\
+DD     & 0.018 & 0.014 & 0.030 & 0.039 &  0.025 &  0.034 &  0.011 &  0.033 &  0.055 &  0.019 \\
+II     & 0.020 & 0.013 & 0.025 & 0.027 &  0.062 &  0.016 &  0.017 &  0.039 &  0.049 &  0.031 \\
+DN     & 0.079 & 0.063 & 0.082 & 0.069 &  0.071 &  0.061 &  0.059 &  0.070 &  0.076 &  0.051 \\
+IN     & 0.044 & 0.075 & 0.053 & 0.085 &  0.064 &  0.031 &  0.036 &  0.038 &  0.053 &  0.067 \\
+DI     & 0.115 & 0.139 & 0.194 & 0.199 &  0.136 &  0.056 &  0.087 &  0.079 &  0.124 &  0.128 \\
+NN     & 0.000 & 0.000 & 0.000 & 0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 &  0.000 \\ \hline
+\multicolumn{11}{l}{Subpanel (4) ABS Level: Decrease}                                        \\ \hline
+D      & 0.073 & 0.070 & 0.070 & 0.073 &  0.071 &  0.041 &  0.056 &  0.071 &  0.075 &  0.051 \\
+I      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+N      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DD     & 0.092 & 0.068 & 0.081 & 0.066 &  0.083 &  0.023 &  0.030 &  0.063 &  0.077 &  0.045 \\
+II     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DN     & 0.080 & 0.074 & 0.081 & 0.076 &  0.055 &  0.044 &  0.056 &  0.073 &  0.074 &  0.051 \\
+IN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DI     & 0.062 & 0.084 & 0.099 & 0.104 &  0.083 &  0.030 &  0.072 &  0.068 &  0.074 &  0.071 \\
+NN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\ \hline
+\multicolumn{11}{l}{Subpanel (5) ABS Level: Increase}                                        \\ \hline
+D      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+I      & 0.051 & 0.059 & 0.047 & 0.066 &  0.051 &  0.032 &  0.037 &  0.039 &  0.057 &  0.060 \\
+N      &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+DD     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+II     & 0.056 & 0.055 & 0.034 & 0.064 &  0.053 &  0.030 &  0.037 &  0.034 &  0.060 &  0.056 \\
+DN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\
+IN     & 0.044 & 0.076 & 0.055 & 0.071 &  0.054 &  0.034 &  0.039 &  0.037 &  0.057 &  0.060 \\
+DI     & 0.058 & 0.062 & 0.073 & 0.087 &  0.055 &  0.030 &  0.043 &  0.022 &  0.067 &  0.064 \\
+NN     &    -- &    -- &    -- &    -- &     -- &     -- &     -- &     -- &     -- &     -- \\ \hline\hline
+\end{tabular}}

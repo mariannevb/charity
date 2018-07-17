@@ -53,8 +53,8 @@ data = dataset;
 
 %% Get Index in Dataset of Each 1-Percentile
 
-% the dataset has 19491 observations (groups)
-% so roughly 195 observation within 1-percentile
+% the dataset has 19422 observations (groups)
+% so roughly 194 observation within 1-percentile
 numobs = size(data,1);
 indexpercentile = [1:1:numobs;linspace(0,100,numobs)];
 
@@ -81,10 +81,11 @@ sorted = sortrows(data,sgp);
 perlocation = indexlocation(per,:);
 
 % Preallocation
-observationrow = NaN(size(perlocation,1),21);
-observationmat = NaN(size(perlocation,1),21);
+observationrow = NaN(size(perlocation,1),57);
+observationmat = NaN(size(perlocation,1),57);
 
 for iterlocation = 1:size(perlocation,1)
+    
     % location indices of 'this' and 'last' percentiles
     tempthis = perlocation(iterlocation,:);
     if iterlocation == 1
@@ -92,35 +93,72 @@ for iterlocation = 1:size(perlocation,1)
     else
         templast = perlocation(iterlocation-1,:);
     end
-
+    
+    % obtain group data
     temprow = sorted(tempthis(:,1):tempthis(:,2),:);
     tempmat = sorted(templast(:,2)+1:tempthis(:,2),:);
-
-    % calculate average average of those observations
-
-    % keep information percentile, number of group,
+    
+    % calculate group information
+    
+    % percentile, obs (number of group), size
     temprowper = per(iterlocation,:);
     tempmatper = per(iterlocation,:);
-    temprownum = size(temprow,1);
-    tempmatnum = size(tempmat,1);
-
-    % keep  (group index/size) average
+    temprowobs = size(temprow,1);
+    tempmatobs = size(tempmat,1);
     temprowsize = mean( temprow(:,2),1 );
     tempmatsize = mean( tempmat(:,2),1 );
-
-    % sum of variables (occu/freq/magn)
-    temprowocc = sum( temprow(:,3:8), 1,'omitnan');
-    tempmatocc = sum( tempmat(:,3:8), 1,'omitnan');
-    temprowmag = mean( temprow(:,9:end), 1,'omitnan');
-    tempmatmag = mean( tempmat(:,9:end), 1,'omitnan');
-
-    temprowfreq = temprowocc ./ sum(temprowocc,2);
-    tempmatfreq = tempmatocc ./ sum(tempmatocc,2);
-
-    observationrow(iterlocation,:) = ...
-        [temprowper,temprownum,temprowsize,temprowocc,temprowfreq,temprowmag];
-    observationmat(iterlocation,:) = ...
-        [tempmatper,tempmatnum,tempmatsize,tempmatocc,tempmatfreq,tempmatmag];
+    
+    % keep information
+    temprowinfo = [ temprowper,temprowobs,temprowsize, ];
+    tempmatinfo = [ tempmatper,tempmatobs,tempmatsize, ];
+    
+    % analog pcp analysis
+    % OCC MAG - TOTOCC TOTFRQ ABGMAG ABGDIN
+    
+    % obtain OCC and MAG data
+    temprowocc = temprow(:, 3:11);
+    temprowmag = temprow(:,12:20);
+    temprowloc = ~isnan(temprowocc);
+    
+    tempmatocc = tempmat(:, 3:11);
+    tempmatmag = tempmat(:,12:20);
+    tempmatloc = ~isnan(tempmatocc);
+    
+    % calculatte average DIN magnitude across all patterns
+    temprowavgdin = namegroup_din( temprowloc,temprowocc,temprowmag );
+    tempmatavgdin = namegroup_din( tempmatloc,tempmatocc,tempmatmag );
+    
+    % vectorize
+    temprowavgdin = temprowavgdin';
+    temprowavgdin = temprowavgdin(:)';
+    tempmatavgdin = tempmatavgdin';
+    tempmatavgdin = tempmatavgdin(:)';
+    
+    % calculate total occurrence and average magnitude across all patterns
+    temprowtotocc = sum( temprowocc, 1,'omitnan' );
+    temprowavgmag = sum( temprowmag, 1,'omitnan' ) ./ temprowtotocc;
+    tempmattotocc = sum( tempmatocc, 1,'omitnan' );
+    tempmatavgmag = sum( tempmatmag, 1,'omitnan' ) ./ tempmattotocc;
+    
+    % calculate total frequency across all patterns
+    temprowtotfrq = [ ...
+        temprowtotocc(:,1:3) ./ sum( temprowtotocc(:,1:3) ),...
+        temprowtotocc(:,4:9) ./ sum( temprowtotocc(:,4:9) ),...
+        ];
+    tempmattotfrq = [ ...
+        tempmattotocc(:,1:3) ./ sum( tempmattotocc(:,1:3) ),...
+        tempmattotocc(:,4:9) ./ sum( tempmattotocc(:,4:9) ),...
+        ];
+    
+    % keep statistics
+    temprowstat = ...
+        [ temprowtotocc,temprowtotfrq,temprowavgmag,temprowavgdin ];
+    tempmatstat = ...
+        [ tempmattotocc,tempmattotfrq,tempmatavgmag,tempmatavgdin ];
+    
+    % output information and statistics
+    observationrow(iterlocation,:) = [ temprowinfo,temprowstat ];
+    observationmat(iterlocation,:) = [ tempmatinfo,tempmatstat ];
 end
 
 %% OUTPUT
