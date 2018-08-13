@@ -1,6 +1,5 @@
-%% namegroup_main.m
-
-% The script studies the price change patterns within a group.
+%%  namegroup_main.m
+%   The script studies the price change patterns within a group.
 
 clear
 cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
@@ -16,8 +15,14 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 % which measure
 % pcf        & pchangef:        pcK =   1;
 % pc_pennyf  & pchange_pennyf:          2;
-% pc_allf    & pchange_allf:            3;
-% pc_unitf   & pchange_unitf:           4;
+% pc_unitf   & pchange_unitf:           3;
+% pc_allf    & pchange_allf:            4;
+
+% pc indicator | (-inf,-1) | [-1,0) | [0,0] | (0,1] | (1,+inf) | Missing
+% pcf          | -1        | -1     | 0     | 1     | 1        | .
+% pc_pennyf    | -1        |  0     | 0     | 0     | 1        | .
+% pc_unitf     | .         | -1     | 0     | 1     | .        | .
+% pc_allf      | -2        | -1     | 0     | 1     | 2        | .
 
 % conditional calculation
 % treat impossible as missing:  con =   1;
@@ -33,13 +38,13 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 global con gpK pcK head here
 con     = 1;
 gpK     = 4;
-pcK     = 4;
+pcK     = 1;
 head    = 1;
 here    = '../output/namegroup';
 
 %%  Import Data                                                       (raw)
 
-tempdata = readtable('../output/namegroup_data.xlsx');
+tempdata = readtable([here,'_data.xlsx']);
 
 raw.var = tempdata.Properties.VariableNames';
 raw.num = [ tempdata.nname, table2array(tempdata(:,2:end)) ];
@@ -55,23 +60,27 @@ raw.pc = raw.num(:,25:32);
 
 %%  Initialize Main Dataset                                          (data)
 
+% locate singleton-group observations based on choice of group definition
+% delete those because no bi-price-change pattern within such groups
+data.singleton = ( raw.gp( :,(gpK*3-2)+1 ) == 1 );
+
 % unique id of each observation
 % 1st column: name
 % 2nd column: country
 % 3rd column: year
 % 4th column: good-variety
-data.id = raw.id;
+data.id = raw.id(~data.singleton,:);
 
 % group definition that determines the subset to analyze
 % 1st column: index of group
 % 2nd column: number of observations within group
 % 3rd column: index of observation within group
-data.gp = raw.gp(:,(gpK*3-2):(gpK*3));
+data.gp = raw.gp(~data.singleton,(gpK*3-2):(gpK*3));
 
 % price change variables
 % 1st column: price change indicators
 % 2nd column: price change levels
-data.pc = raw.pc(:,(pcK*2-1):(pcK*2));
+data.pc = raw.pc(~data.singleton,(pcK*2-1):(pcK*2));
 
 %%  Find Within Group Price Change Pattern                            (pcp)
 
@@ -123,10 +132,6 @@ pcp.tblocc = array2table([pcp.group,pcp.occ], ...
     'VariableNames',{'OCC';'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';});
 pcp.tblmag = array2table([pcp.group,pcp.mag], ...
     'VariableNames',{'MAG';'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';});
-writetable(pcp.tblocc,[here,'_pcp.xlsx' ], ...
-    'WriteVariableNames',head,'Sheet', 'occ');
-writetable(pcp.tblmag,[here,'_pcp.xlsx' ], ...
-    'WriteVariableNames',head,'Sheet', 'mag');
 
 % calculatte average DIN magnitude across all patterns
 % D=decrease; I=increase; N=no-change
@@ -147,8 +152,14 @@ pcp.stat = [ pcp.totocc;pcp.totfrq;pcp.avgmag;pcp.avgdin; ];
 pcp.stattbl = array2table( pcp.stat, ...
     'VariableNames',{'D';'I';'N';'DD';'II';'DN';'IN';'DI';'NN';}, ...
     'RowNames',{'OCC';'FREQ';'MAG';'AVGD';'AVGI';'AVGN';});
-writetable(pcp.stattbl,[here,'_pcp.xlsx' ], ...
-    'WriteVariableNames',head,'Sheet', 'stat');
+
+% Delete old file and create new filename
+% Write excel file
+pcp.file = [ here,'_pcp.xlsx' ];
+delete(pcp.file);
+writetable(pcp.tblocc,pcp.file,'WriteVariableNames',head,'Sheet','occ');
+writetable(pcp.tblmag,pcp.file,'WriteVariableNames',head,'Sheet','mag');
+writetable(pcp.stattbl,pcp.file,'WriteVariableNames',head,'Sheet','stat');
 
 % Latex Code
 pcp.tex = mat2tex( pcp.stat,'%.3f','nomath' );
@@ -201,13 +212,15 @@ szs.varnames = {
 szs.tblrow = array2table( szs.obsrow,'VariableNames',szs.varnames);
 szs.tblmat = array2table( szs.obsmat,'VariableNames',szs.varnames);
 
-writetable(szs.tblrow,[here,'_szs.xlsx'], ...
-    'WriteVariableNames',head,'Sheet', 'at');
-writetable(szs.tblmat,[here,'_szs.xlsx'], ...
-    'WriteVariableNames',head,'Sheet', 'between');
+% Delete old file and create new filename
+% Write excel file
+szs.file = [ here,'_szs.xlsx' ];
+delete(szs.file);
+writetable(szs.tblrow,szs.file,'WriteVariableNames',head,'Sheet','at');
+writetable(szs.tblmat,szs.file,'WriteVariableNames',head,'Sheet','btw');
 
 % Latex Code
-szs.tex = mat2tex( [ szs.obsrow;szs.obsmat ],'%.3f','nomath' );
+szs.tex = mat2tex( [ szs.obsrow';szs.obsmat' ],'%.3f','nomath' );
 disp(szs.tex);
 
 %%  Save Dataset

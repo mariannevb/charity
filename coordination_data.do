@@ -16,16 +16,16 @@ use "./data/ikea_fill_2018.dta", replace
 drop if flag > 0
 
 * keep only relevant variables:
-* (1) name group variables
+* (1) identification variables: name, year, country, good, variety
 * (2) price change indicators and levels
 keep ///
-	name y ij ccode2 ///
+	name ccode2 y i j ij ijc ///
 	pcf pc_pennyf pchangef pchange_pennyf
 
 * ------------------------------------------------------------------------------
 * NAME DUPLICATE
 * ------------------------------------------------------------------------------
-* create duplicate of name
+* create duplicates of name
 * replace name2 with "group" name using "namegroup_construction.do"
 * if this need to get done over with the stricter "name groups"
 * simply use "name" instead of "name2"
@@ -35,12 +35,24 @@ la var name2 "all instances of root name grouped together"
 quietly do "./input/namegroup_construction.do"
 
 * ------------------------------------------------------------------------------
-* GROUP
-* create groups that are defined by name, country, and/or year
+* IDENTIFICATION
+* specify id variables for obs: name, country, year, good and/or variety
 * ------------------------------------------------------------------------------
 
-sort y ij name2 ccode2
-duplicates report y ij name2 ccode2
+sort name2 y ccode2 i j
+
+* check for duplicates
+* note 'i' and 'j' cannot uniquely identify
+* egen ij  = group(i j)
+* egen ijc = group(ij c)
+duplicates report y ccode2 i j
+duplicates report y ccode2 ij
+duplicates report y ijc
+
+* ------------------------------------------------------------------------------
+* GROUP
+* create groups that are defined by name, country, year, good and/or variety
+* ------------------------------------------------------------------------------
 
 * Group Definition (1): (year,good_variety) groups
 bysort y ij: gen N_yij = _N
@@ -71,13 +83,14 @@ la var yearijn "numerical index of (year,good_variety,name) groups"
 * recode price change indicators and levels
 *
 * four types of price change indicators are constructed
-* ______________________________________________________________________________
-* price change | (-infty,-1) | [-1,0) | [0,0] | (0,1] | (1,+infty) | Missing
-* pcf          | -1          | -1     | 0     | 1     | 1          | .
-* pc_pennyf    | -1          | 0      | 0     | 0     | 1          | .
-* pc_allf      | -2          | -1     | 0     | 1     | 2          | .
-* pc_unitf     | .           | -1     | 0     | 1     | .          | .
-* ______________________________________________________________________________
+* ------------------------------------------------------------------------------
+* | price change | (-infty,-1) | [-1,0) | [0,0] | (0,1] | (1,+infty) | Missing |
+* ------------------------------------------------------------------------------
+* | pcf          | -1          | -1     | 0     | 1     | 1          | .       |
+* | pc_pennyf    | -1          | 0      | 0     | 0     | 1          | .       |
+* | pc_unitf     | .           | -1     | 0     | 1     | .          | .       |
+* | pc_allf      | -2          | -1     | 0     | 1     | 2          | .       |
+* ------------------------------------------------------------------------------
 * the steps are to
 * (1) recode price change indicators to prime numbers
 * (2) recode price change levels
@@ -205,14 +218,12 @@ la value ccode_99 ccode_99_lbl
 * changing format of year variable so it does not appear as "1-1-2016" in Excel
 gen int year = y
 la var year "year (int)"
-* drop singleton observations at most disaggregate group definition
-drop if N_yij == 1
 * generate numerical index for name2
 egen nname = group(name2)
 la var nname "numerical index of (name2) groups"
 
 keep ///
-	nname year ij ccode2 ccode_99 ///
+	nname ccode2 year ij ///
 	yearij N_yij i_yij ///
 	yearn N_yn i_yn ///
 	yearijn N_yijn i_yijn ///
@@ -223,10 +234,10 @@ keep ///
 	pcf_99 pchangef_99 ///
 	pc_pennyf_99 pchange_pennyf_99 ///
 	pc_allf_99 pchange_allf_99 ///
-	pc_unitf_99 pchange_unitf_99
-
+	pc_unitf_99 pchange_unitf_99 ///
+	ccode_99
 order ///
-	nname year ij ccode2 ccode_99 ///
+	nname ccode2 year ij ///
 	yearij N_yij i_yij ///
 	yearn N_yn i_yn ///
 	yearijn N_yijn i_yijn ///
@@ -237,7 +248,8 @@ order ///
 	pcf_99 pchangef_99 ///
 	pc_pennyf_99 pchange_pennyf_99 ///
 	pc_allf_99 pchange_allf_99 ///
-	pc_unitf_99 pchange_unitf_99
+	pc_unitf_99 pchange_unitf_99 ///
+	ccode_99
 
 * ------------------------------------------------------------------------------
 * EXPORT

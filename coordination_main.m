@@ -15,69 +15,96 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 % (year,good-variety,name):             3;
 
 % which measure
-% pcf&pchangef:                 pcK =   1;
-% pc_pennyf&pchange_pennyf:             2;
-% pcb&pchangeb:                         3;
-% pc_pennyb&pchange_pennyb:             4;
-% pcraw&pchangeraw:                     5;
-% pc_pennyraw&pchange_pennyraw:         6;
+% pcf        & pchangef:        pcK =   1;
+% pc_pennyf  & pchange_pennyf:          2;
+% pc_unitf   & pchange_unitf:           3;
+% pc_allf    & pchange_allf:            4;
+
+% pc indicator | (-inf,-1) | [-1,0) | [0,0] | (0,1] | (1,+inf) | Missing
+% pcf          | -1        | -1     | 0     | 1     | 1        | .
+% pc_pennyf    | -1        |  0     | 0     | 0     | 1        | .
+% pc_unitf     | .         | -1     | 0     | 1     | .        | .
+% pc_allf      | -2        | -1     | 0     | 1     | 2        | .
+
+% conditional calculation
+% treat impossible as missing:  con =   1;
+% unconditional:                        0;
 
 % want variable name
 % variable name in first row:   head =  1;
 % numerical values only:                0;
 
-% path to save output
+% here to save output
 % specify string
 
-global gpK pcK head path
+global con gpK pcK head here
+con     = 1;
 gpK     = 1;
 pcK     = 1;
 head    = 1;
-path    = '../output/coordination';
+here    = '../output/coordination';
 
 %%  Import Data                                                       (raw)
 
-tempdata = readtable('../output/coordination_data.xlsx');
+tempdata = readtable([here,'_data.xlsx']);
 
 raw.var = tempdata.Properties.VariableNames';
 raw.num = table2array(tempdata);
-
 clearvars temp* iter*
+
+% separate dataset into three types variables
+% (1) id - identification variables: name, year, good-variety, country,
+% (2) gp - group definition variables: group, size, index
+% (3) pc - price change indicators and levels variables: 99 versions
+raw.id = raw.num(:, 1: 4);
+raw.gp = raw.num(:, 5:13);
+raw.pc = raw.num(:,22:29);
+
+% additional recode country code data
+raw.cc = raw.num(:,end);
 
 %%  Identify The Group To Analyze                                    (data)
 
-% determine which group want to use
-data.k = gpK;
+% locate singleton-group observations based on choice of group definition
+% delete those because no bi-price-change pattern within such groups
+data.singleton = ( raw.gp( :,(gpK*3-2)+1 ) == 1 );
 
 % unique id of each observation
-% [year, good_variety, name, country]
-data.id = raw.num(:,1:4);
+% 1st column: name
+% 2nd column: country
+% 3rd column: year
+% 4th column: good-variety
+data.id = raw.id(~data.singleton,:);
 
-% group id that determine the subset to analyze
-% [group index, number-of-obs within group, index-of-obs within group]
-data.gp = raw.num(:,[data.k+4,data.k+7,data.k+8]);
+% group definition that determines the subset to analyze
+% 1st column: index of group
+% 2nd column: number of observations within group
+% 3rd column: index of observation within group
+data.gp = raw.gp(~data.singleton,(gpK*3-2):(gpK*3));
 
 % price change variables
-% [price change indicator, price change level]
-data.pc = raw.num(:,end-2:end-1);
+% 1st column: price change indicators
+% 2nd column: price change levels
+data.pc = raw.pc(~data.singleton,(pcK*2-1):(pcK*2));
 
 % country numerical code
-% [country numerical (Fibonacci) code]
-data.cc = raw.num(:,end);
+%  1: us |  2: uk |  3: ca |  4: fr |  5: it |  6: de |  7: se
+% 17: us | 19: uk | 23: ca | 29: fr | 31: it | 37: de | 41: se
+data.cc = raw.cc(~data.singleton,:);
 
 %%  Study Price Coordination                                          (coo)
 
-% determine which group want to use
-coo.k = pcK;
-
 % define key variables
 coo.group       = unique(data.gp(:,1));
+
 coo.groupall    = data.gp(:,1);
 coo.groupnum    = data.gp(:,2);
 coo.groupidx    = data.gp(:,3);
-coo.pcindicator = data.pc(:,coo.k);
-coo.pclevel     = data.pc(:,coo.k+1);
-coo.country     = data.cc;
+
+coo.pcindicator = data.pc(:,1);
+coo.pclevel     = data.pc(:,2);
+
+coo.country     = data.cc(:,1);
 
 % preallocation of occurrence, magnitude
 coo.occ = NaN(size(coo.group,1),210);
@@ -98,7 +125,7 @@ for itergroup = 1:size(coo.group,1)
 
     % calcaulte of each price change pattern across countries
     [ tempocc,tempmag ] = ...
-        coordination_coo( temppcind,temppclev,tempccode,0 );
+        coordination_coo( temppcind,temppclev,tempccode,con );
 
     %
     coo.occ(itergroup,:) = tempocc;
@@ -195,4 +222,4 @@ mat2tex( [ cmp.occ,cmp.freq,cmp.mag ], ...
     '%i','%i','%i','%i','%i','%i','%.3f','nomath' );
 
 %%  Save Dataset
-save([path,'_data']);
+save([here,'_data']);

@@ -29,6 +29,7 @@ keep ///
 * replace name2 with "group" name using "namegroup_construction.do"
 * if this need to get done over with the stricter "name groups"
 * simply use "name" instead of "name2"
+
 gen name2=name
 la var name2 "all instances of root name grouped together"
 quietly do "./input/namegroup_construction.do"
@@ -81,8 +82,8 @@ la var namecy "numerical index of (name2,ccode2,y) groups"
 * price change | (-infty,-1) | [-1,0) | [0,0] | (0,1] | (1,+infty) | Missing
 * pcf          | -1          | -1     | 0     | 1     | 1          | .
 * pc_pennyf    | -1          | 0      | 0     | 0     | 1          | .
-* pc_allf      | -2          | -1     | 0     | 1     | 2          | .
 * pc_unitf     | .           | -1     | 0     | 1     | .          | .
+* pc_allf      | -2          | -1     | 0     | 1     | 2          | .
 * ______________________________________________________________________________
 * the steps are to
 * (1) recode price change indicators to prime numbers
@@ -192,8 +193,6 @@ la var pchange_unitf_99 "pchange_unitf recode: (.=99)"
 * changing format of year variable so it does not appear as "1-1-2016" in Excel
 gen int year = y
 la var year "year (int)"
-* drop singleton observations at most disaggregate group definition
-drop if N_ncy == 1
 
 keep ///
 	name2 ccode2 year ij ///
@@ -209,7 +208,6 @@ keep ///
 	pc_pennyf_99 pchange_pennyf_99 ///
 	pc_allf_99 pchange_allf_99 ///
 	pc_unitf_99 pchange_unitf_99
-
 order ///
 	name2 ccode2 year ij ///
 	nname N_name2 i_name2 ///

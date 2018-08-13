@@ -1,4 +1,4 @@
-function [ occurrence,magnitude ] = coordination_coo( indicator,level,country,conditional )
+function [ location,occurrence,magnitude ] = coordination_coo( indicator,level,country,conditional )
 
 %	Price Coordination (coo)
 %
@@ -6,32 +6,42 @@ function [ occurrence,magnitude ] = coordination_coo( indicator,level,country,co
 %           Calculate occurence/magnitude across indicator-country.
 %
 %   INPUT:
-%           indicator   -indicator of price change direction
-%           level       -level of the price change
+%           indicator   -indicator of price-change
+%           level       -level of the price-change
 %           country     -country numerical code
 %           conditional -calculate conditional/unconditional occurrence
 %   OUTPUT:
-%           occurrence  -the number of occurences
-%           magnitude   -the magnitude
+%           location    -the location of non-missing pcp
+%           occurrence  -the occurrence of non-missing pcp
+%           magnitude   -the magnitude of non-missing pcp
 %
 %   EXAMPLE:
-%           Suppose a group data
-%           group   country         indicator     level
-%           1       CA              D             -0.80
-%           1       US              I             +0.06
-%           1       SE              Missing           .
-%           Define a NEW ID by multiplication of (country, indicator)
-%           group   ID               level
-%           1       CA*D             -0.80
-%           1       US*I             +0.06
-%           1       SE*Missing           .
-%           With NEW ID, the calculation is exactly as in pcp function
+%           Define
+%           a new country-price-change unique code, which is
+%           the multiplication of country code and price-change code.
 %
-%           I define countries to be
-%           11 = us, 13 = uk, 17 = ca, 19 = fr, 23 = it, 29 = de, 31 = se
-%           and indicators to be
-%           decrease = 2, unchange = 3, increase = 5, missing = 7
-%           So, within any group the ID is unique.
+%           Suppose a group data
+%           -----------------------------------------------------------------
+%           | group | country | price-change indicator | price-change level |
+%           -----------------------------------------------------------------
+%           | 1     | CA ( 7) | Decrease (2)           | -0.80              |
+%           | 1     | US (11) | Increase (3)           | +0.06              |
+%           | 1     | SE (13) | Missing  (5)           | .                  |
+%           -----------------------------------------------------------------
+%
+%           Then the new country-price-change unique code is
+%           -----------------------------------------------------------------------------
+%           | group | NEW code  | country | price-change indicator | price-change level |
+%           -----------------------------------------------------------------------------
+%           | 1     | CA-D (14) | CA ( 7) | Decrease (2)           | -0.80              |
+%           | 1     | US-I (33) | US (11) | Increase (3)           | +0.06              |
+%           | 1     | SE-M (65) | SE (13) | Missing  (5)           | .                  |
+%           -----------------------------------------------------------------------------
+%
+%           Therefore can calculate, averaging across all observations in all groups
+%           (1) the uni- & bi- pcp
+%           (1) the uni- & bi- pcp within & across different countries & regions
+%
 
 
 %% INPUT
@@ -40,8 +50,9 @@ lev = level;
 cou = country;
 con = conditional;
 
-%% Define Unique Country-Indicator ID
-pairs = coordination_idp( [2;3;5;7;],[11;13;17;19;23;29;31;] );
+%% Country-PriceChange Indicator
+% define Code & Pair
+[ code,pair ] = coordination_idp( [2;3;5;7;],[11;13;17;19;23;29;31;] );
 indcou = ind .* cou;
 
 %% Calculate Occurrence / Magnitude
@@ -62,7 +73,7 @@ levmat = levmat(:);
 % all price change combos
 combination = indmat(index);
 levelchange = levmat(index);
-valuesclass = pairs';
+valuesclass = pair';
 
 % adjust matrix size (compatibility with earlier version matlab)
 combinationmat = repmat(combination,1,size(valuesclass,2));
@@ -83,7 +94,8 @@ mag = change ./ count;
 if con == 1, occ(occ == 0) = NaN;  end;
 
 %% OUTPUT
-occurrence = occ;
-magnitude  = mag;
+location   = [ ~uniconlocate,~biconlocate ];
+occurrence = [ uniocc,biocc ];
+magnitude  = [ unimag,bimag ];
 
 end

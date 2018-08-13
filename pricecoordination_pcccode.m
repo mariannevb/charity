@@ -1,4 +1,4 @@
-function [ pcccode,pccpair ] = coordination_idp( pricechange,country )
+function [ pcccode,pccpair ] = pricecoordination_pcccode( PRICECHANGE,COUNTRY,FULL )
 %
 %	Identification Pairs (idp)
 %
@@ -8,6 +8,7 @@ function [ pcccode,pccpair ] = coordination_idp( pricechange,country )
 %   INPUT:
 %           pricechange -indicator codes of price-change
 %           country     -indicator codes of country
+%           full        -use all pricechange & country codes
 %   OUTPUT:
 %           code        -id for (country, price-change) codes
 %           pair        -id for (country, price-change) code pairs
@@ -52,8 +53,9 @@ function [ pcccode,pccpair ] = coordination_idp( pricechange,country )
 
 %%
 
-p = pricechange;
-c = country;
+p = PRICECHANGE;
+c = COUNTRY;
+f = FULL;
 
 % unique price-change pair
 % can include same indicators (diagonal)
@@ -73,20 +75,28 @@ cp = cp(2:end,:);
 % this need to be integrated in a better way, for now hardwire the codes
 
 % | D | I | N | Missing | DD | II | DN | IN | DI | NN | Missing
-% | 2 | 5 | 3 | 7       |4   | 25 | 6  | 15 | 10 | 9  | 14,21,35,49
-p  = [ 2; 5; 3; 7; ];
-pp = [ 4; 25; 6; 15; 10; 9; 14; 21; 35; 49; ];
-
+% | 2 | 5 | 3 | 7       | 4  | 25 | 6  | 15 | 10 | 9  | 14,21,35,49
+if f==1
+    p  = [ 2; 5; 3; 7; ];
+    pp = [ 4; 25; 6; 15; 10; 9; 14; 21; 35; 49; ];
+end
 %%
 
 % unique (country, price-change) code
 % element in the outer (Kronecker) product of
 % country code and price-change code
 pcccode = kron( p,c );
+% the total elements = 4 * 7
+% the first 7: p = 2
+% the last  7: p = 7
 
+%%
 % unique (country, price-change) code pair
 % element in the outer (Kronecker) product of
 % (country,price-change) code and itself
 pccpair = kron( pp,cp );
+% the total elements = 10 * 21
+% the first  21: pp = 4
+% the last 4*21: pp = 14,21,35,49
 
 end

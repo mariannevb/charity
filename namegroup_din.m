@@ -51,6 +51,8 @@ function [ magsummary ] = namegroup_din( location,occurrence,magnitude )
 %
 %              To Be Finished
 
+%%
+
 loc = location;
 occ = occurrence;
 mag = magnitude;
