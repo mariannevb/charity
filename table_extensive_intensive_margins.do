@@ -105,50 +105,139 @@ la var pchangef100 "pchangef in percentages"
 * ------------------------------------------------------------------------------
 
 * extensive margins table
-tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
-	pc_allf using "`pathname'_ext.xls" , replace ///
-	style(tab) cells(row) format(2) layout(cb) ptotal(single) ///
-	h1("Extensive Margins: Price Changes By Directions (%)")
-
 * intensive margins table
-* (1) all non-zero and total
-* (2) only  <1 LCU total
-* (2) only >=1 LCU total
-tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
-	pc_allf if (abs(pc_allf) >= 1) using "`pathname'_int.xls" , replace ///
-	sum cells(mean pchangef100) ///
-	style(tab) format(2) layout(cb) ptotal(single) ///
-	h1("Intensive Margins: Magnitudes of Price Changes By Directions (%)")
-tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
-	pcf if (abs(pcf) >= 1) using "`pathname'_int.xls" , append ///
-	sum cells(mean pchangef100) ///
-	style(tab) format(2) layout(cb) ptotal(single) ///
-	h1("Intensive Margins: Magnitudes of Price Changes By Directions (%)")
 
 * ------------------------------------------------------------------------------
 * LATEX
 * ------------------------------------------------------------------------------
 
+* ------------------------------------------------------------------------------
+* UPDATE September 12
+* ------------------------------------------------------------------------------
+gen ccode4 = .
+replace ccode4 = 1 if ccode2 == 4
+replace ccode4 = 2 if ccode2 == 6
+replace ccode4 = 3 if ccode2 == 5
+replace ccode4 = 4 if ccode2 == 1
+replace ccode4 = 5 if ccode2 == 3
+replace ccode4 = 6 if ccode2 == 2
+replace ccode4 = 7 if ccode2 == 7
+la define ccode4_lbl 1 "France"
+la define ccode4_lbl 2 "Germany" , add
+la define ccode4_lbl 3 "Italy"   , add
+la define ccode4_lbl 4 "US"      , add
+la define ccode4_lbl 5 "Canada"  , add
+la define ccode4_lbl 6 "UK"      , add
+la define ccode4_lbl 7 "Sweden"  , add
+la value ccode4 ccode4_lbl
+
+gen pcf_abs = abs(pcf)
+la var pcf_abs "abs of pcf"
+la define pcf_abs_lbl  0 "No Change"
+la define pcf_abs_lbl  1 "Penny+Regular D+I", add
+la value pcf_abs pcf_abs_lbl
+
+gen pc_allf_abs = abs(pc_allf)
+la var pc_allf_abs "abs of pc_allf"
+la define pc_allf_abs_lbl  0 "No Change"
+la define pc_allf_abs_lbl  1 "Penny D+I", add
+la define pc_allf_abs_lbl  2 "Regular D+I", add
+la value pc_allf_abs pc_allf_abs_lbl
+
+gen pchangef100abs = 100 * abs(pchangef)
+la var pchangef100abs "pchangef in percentages absolute value"
+
 tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
+	y ccode4 age7 price_decile /// row variables
+	pc_allf using "`pathname'_ext.xls" , replace ///
+	style(tab) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf using "`pathname'_ext.xls" , append ///
+	style(tab) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf_abs using "`pathname'_ext.xls" , append ///
+	style(tab) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf_abs using "`pathname'_ext.xls" , append ///
+	style(tab) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf if (pcf_abs >= 1) using "`pathname'_int.xls" , replace ///
+	sum cells(mean pchangef100) ///
+	style(tab) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf if (pcf_abs >= 1) using "`pathname'_int.xls" , append ///
+	sum cells(mean pchangef100) ///
+	style(tab) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf_abs if (pcf_abs >= 1) using "`pathname'_int.xls" , append ///
+	sum cells(mean pchangef100abs) ///
+	style(tab) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf_abs if (pcf_abs >= 1) using "`pathname'_int.xls" , append ///
+	sum cells(mean pchangef100abs) ///
+	style(tab) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
+
+tabout ///
+	y ccode4 age7 price_decile /// row variables
 	pc_allf using "`pathname'_ext.tex" , replace ///
 	style(tex) cells(row) format(2) layout(cb) ptotal(single) ///
-	h1("Extensive Margins: Price Changes By Directions (%)")
+	h1("Extensive Margins (%)")
 tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
-	pc_allf if (abs(pc_allf) >= 1) using "`pathname'_int.tex" , replace ///
+	y ccode4 age7 price_decile /// row variables
+	pcf using "`pathname'_ext.tex" , append ///
+	style(tex) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf_abs using "`pathname'_ext.tex" , append ///
+	style(tex) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf_abs using "`pathname'_ext.tex" , append ///
+	style(tex) cells(row) format(2) layout(cb) ptotal(single) ///
+	h1("Extensive Margins (%)")
+
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf if (pcf_abs >= 1) using "`pathname'_int.tex" , replace ///
 	sum cells(mean pchangef100) ///
 	style(tex) format(2) layout(cb) ptotal(single) ///
-	h1("Intensive Margins: Magnitudes of Price Changes By Directions (%)")
+	h1("Intensive Margins (%)")
 tabout ///
-	y ccode2 age7 price_decile ijtotal3 /// row variables
-	pcf if (abs(pcf) >= 1) using "`pathname'_int.tex" , append ///
+	y ccode4 age7 price_decile /// row variables
+	pcf if (pcf_abs >= 1) using "`pathname'_int.tex" , append ///
 	sum cells(mean pchangef100) ///
 	style(tex) format(2) layout(cb) ptotal(single) ///
-	h1("Intensive Margins: Magnitudes of Price Changes By Directions (%)")
+	h1("Intensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pc_allf_abs if (pcf_abs >= 1) using "`pathname'_int.tex" , append ///
+	sum cells(mean pchangef100abs) ///
+	style(tex) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
+tabout ///
+	y ccode4 age7 price_decile /// row variables
+	pcf_abs if (pcf_abs >= 1) using "`pathname'_int.tex" , append ///
+	sum cells(mean pchangef100abs) ///
+	style(tex) format(2) layout(cb) ptotal(single) ///
+	h1("Intensive Margins (%)")
 
 * ------------------------------------------------------------------------------
 * SUMMARY

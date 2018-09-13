@@ -1,5 +1,33 @@
 
 
+
+\clearpage
+\section{Introduction}
+This report summarizes the results regarding price coordination in Charity project. Results are reached in three steps, indicated by the the following three questions.
+
+\paragraph{Is price coordination stronger among products that share a common product name, i.e., within name groups?}
+Even though intuitively the price coordination should be stronger, it is quite weak, using various group definitions including \texttt{name} as one identification variable (group definition A-D in Table \ref{tbl0}).
+
+Therefore, two additional steps are taken to explore.
+
+\subparagraph{Disaggregate the group definition, in the sense of including additional identification variable.}
+The first extension is to further disaggregate the group definitions by, for example, taking additional identification variable \texttt{good} (group definition E in Table \ref{tbl0}). Then, the question is translated into that, is price coordination stronger among products that not only share a common name, \textbf{but also} are sold at the same year in the same country under the same product category?
+
+\subparagraph{Analyze the price coordination across the size of the group, where the size is number of observations within a group.}
+The intuition is that, if the name group is big (larger size), it might be \textbf{less} costly to adjust price together (i.e., price coordination), due to menu cost (Midrigan). Then, the second extension translates the question into, is price coordination stronger among products that share a common name, taking into account that the size of group is highly skewed left (i.e., fat right tail in size distribution)?
+
+\paragraph{Is price coordination stronger within currency union?}
+Even though the price coordination is empirically and intuitively should be stronger, the price coordination is the same within currency union (Euro) region, as within non-currency union (North America) region; more interestingly, the price coordination is also the same  across currency union (Euro) region and non-currency union (North America) region.
+
+\paragraph{Where Is Price Coordination?}
+
+The answers to previous questions lead to the question of where is price coordination
+
+To start, inspired by the BILLY case study, the price coordination seems to increase at some aggregated variety level. Therefore, define \texttt{variety2} and \texttt{variety3} that are more aggregated variety variables.
+
+With \texttt{variety2} and \texttt{variety3}, the analyses are repeated; that is, name group, name group across sizes, and within and across regions.
+
+
 \clearpage
 \tableofcontents
 
@@ -43,7 +71,7 @@ I use uni-PCP to refer to uni-variant price change pattern, and bi-PCP to bi-var
 The definitions of groups are as follows.
 
 \begin{table}[H]
-	\caption{Definition: Groups}
+	\caption{Definition: Groups}\label{tbl0}
 	\begin{tabular}{l|rrrrrrr}
 		\hline\hline
 		Group & Year & Name & Country & Good & Variety & Variety2 & Variety3 \\ \hline\hline
@@ -452,3 +480,84 @@ This result strongly rejects the currency union being an underlying factor in pr
 		(6)   & ALL    &   0.030 &   0.052 &   0.122 &   0.234 &   0.036 &   0.526 \\ \hline\hline
 	\end{tabular}
 \end{table}
+
+\section{Appendix}
+
+\subsection{Structure of Codes}
+
+\paragraph{Script} Folder \texttt{charity}
+
+\paragraph{Stata} \texttt{pricecoordination\_data.do} : generate data imported in \texttt{pricecoordination\_main}
+
+\paragraph{Matlab} \texttt{pricecoordination\_main} : the main scripts that implements the three questions.
+\begin{itemize}
+	\item \texttt{pricecoordination\_name} : question 1
+	\item \texttt{pricecoordination\_euro} : question 2
+	\item \texttt{pricecoordination\_bill} : question 3
+\end{itemize}
+
+\paragraph{Question 1} \texttt{pricecoordination\_namestat} : main function in \texttt{pricecoordination\_name}
+\begin{itemize}
+	\item \texttt{pricecoordination\_dataset} : prepare dataset to be used
+	\item \texttt{pricecoordination\_pattern} : define price change patterns and study \texttt{occ/frq/mag}
+	\item \texttt{pricecoordination\_deinno } : study decrease-increase-nochange within each price change patterns
+	\item \texttt{pricecoordination\_sizeper} : conduct across-size-percentile analyses
+\end{itemize}
+
+\paragraph{Question 2} \texttt{pricecoordination\_eurostat} : main function in \texttt{pricecoordination\_euro}
+\begin{itemize}
+	\item \texttt{pricecoordination\_dataset} : prepare dataset
+	\item \texttt{pricecoordination\_country} : define (new) price change patterns with countries and study \texttt{occ/frq/mag}
+	\item \texttt{pricecoordination\_region } : aggregate country-level results into region-level
+	\item \texttt{pricecoordination\_pcccode} : generate price-change-country codes
+\end{itemize}
+
+\paragraph{Question 3} \texttt{pricecoordination\_bill.m} : repeats 
+\begin{itemize}
+	\item \texttt{pricecoordination\_namestat}
+	\item \texttt{pricecoordination\_eurostat}
+\end{itemize}
+
+\paragraph{Data} Folder \texttt{output}
+\begin{itemize}
+	\item \texttt{pricecoordination\_data.dta } : created by \texttt{pricecoordination\_data.do}
+	\item \texttt{pricecoordination\_data.xlsx} : identical; used in \texttt{pricecoordination\_main}
+	\item \texttt{pricecoordination\_data.mat } : created by \texttt{pricecoordination\_main}
+	\item \texttt{pricecoordination\_print.txt} : all tex output printed
+\end{itemize}
+
+\subsection{Structure of Folders}
+
+\texttt{.xu/charity/}
+\begin{itemize}
+	\item \texttt{charity}
+	\begin{itemize}
+		\item folder of scripts files: \texttt{.do}, \texttt{.m}, \texttt{.tex}
+		\item prefixes indicate topics
+		\item synced in GitHub
+	\end{itemize}
+	\item \texttt{data}
+	\begin{itemize}
+		\item original \texttt{.dta} data files and corresponding \texttt{.do} scripts files
+	\end{itemize}
+	\item \texttt{input}
+	\begin{itemize}
+		\item additional input files used in scripts files
+	\end{itemize}
+	\item \texttt{output}
+	\begin{itemize}
+		\item raw output files generated from scripts files
+	\end{itemize}
+	\item \texttt{sum}
+	\begin{itemize}
+		\item tex and related files of summary reports
+	\end{itemize}
+\item \texttt{lyx}
+\begin{itemize}
+\item lyx files of summary reports
+\end{itemize}
+	\item \texttt{memos}
+	\begin{itemize}
+		\item memos
+	\end{itemize}
+\end{itemize}

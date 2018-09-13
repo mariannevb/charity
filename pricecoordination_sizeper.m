@@ -125,8 +125,10 @@ for iterlocation = 1:size(perlocation,1)
     tempmatloc = ~isnan(tempmatocc);
 
     % calculatte average DIN magnitude across all patterns
-    temprowavgdin = namegroup_din( temprowloc,temprowocc,temprowmag );
-    tempmatavgdin = namegroup_din( tempmatloc,tempmatocc,tempmatmag );
+    temprowavgdin = ...
+        pricecoordination_deinno( temprowloc,temprowocc,temprowmag );
+    tempmatavgdin = ...
+        pricecoordination_deinno( tempmatloc,tempmatocc,tempmatmag );
 
     % vectorize
     temprowavgdin = temprowavgdin';

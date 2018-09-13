@@ -66,10 +66,6 @@
 %       pricecoordination_region  : study regional statistics
 %       pricecoordination_pcccode : generate price-change-country codes
 %
-%%  Header
-clear
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
-
 %%  Determine Global Parameters
 %   This section gives the option to change some global parameters; more
 %   importantly, the global parameters can be modified to produce
@@ -149,6 +145,14 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 %   | group o   | yes  | yes  | yes     | yes  |          | yes      |
 %   ------------------------------------------------------------------
 %
+%   (year)                   | gpK = | 29
+%
+%   ------------------------------------------------------
+%   | variables | year | name | country | good | variety |
+%   ------------------------------------------------------
+%   | group 14  | yes  |      |         |      |         |
+%   ------------------------------------------------------
+%
 %%  Which Price Change Measure
 %
 %   pcf        & pchangef       | pcK = | 1
@@ -177,6 +181,10 @@ cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 %
 %%  Where To Save
 %   specify string | here = |
+%
+%%  Header
+clear
+cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 
 global con gpK pcK head here
 con     = 1;
@@ -185,7 +193,7 @@ pcK     = 1;
 head    = 1;
 here    = '../output/pricecoordination';
 
-%%  Import Data                                                       (raw)
+%%  Define Raw Data                                                   (raw)
 
 tempdata = readtable([here,'_data.xlsx']);
 
@@ -207,12 +215,17 @@ raw.id = raw.num(:, 1: 7);
 raw.gp = raw.num(:,10:end-16);
 raw.pc = raw.num(:,end-7:end-0);
 
+save([here,'_dataraw.mat']);
+
+%%  Import Dataset
+load([here,'_dataraw.mat']);
 %%  Question-1                                                       (name)
 pricecoordination_name;
 %%  Question-2                                                       (euro)
 pricecoordination_euro;
 %%  Question-3                                                       (bill)
 pricecoordination_bill;
-
+%%  Baseline                                                         (base)
+pricecoordination_base;
 %%  Export Dataset
 save([here,'_data.mat']);

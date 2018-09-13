@@ -108,8 +108,9 @@ la value ccode3 ccode3_lbl
 sort year name3 ccode3 i j j2 j3 ij ijc
 * check for duplicates: note 'i' and 'j' cannot uniquely identify
 * even though: egen ij  = group(i j);  egen ijc = group(ij c)
-duplicates report year name3 ccode3 ij
 duplicates report year name3 ij
+duplicates report year ccode3 ij
+
 duplicates report year name3 ccode3 i
 duplicates report year name3 ccode3 i j2
 duplicates report year name3 ccode3 i j3
@@ -155,7 +156,7 @@ order ///
 * ------------------------------------------------------------------------------
 
 * Group Definition (1): (year,name)
-egen                grp_yn = group(year name3)
+egen                   grp_yn = group(year name3)
 bysort year name3: gen num_yn = _N
 bysort year name3: gen idx_yn = _n
 la var grp_yn " numerical indexes for (year,name) groups    "
@@ -163,7 +164,7 @@ la var num_yn " number of obs within each (year,name) group "
 la var idx_yn " index for obs within each (year,name) group "
 
 * Group Definition (2): (year,good)
-egen            grp_yi = group(year i)
+egen               grp_yi = group(year i)
 bysort year i: gen num_yi = _N
 bysort year i: gen idx_yi = _n
 la var grp_yi " numerical indexes for (year,good) groups    "
@@ -171,7 +172,7 @@ la var num_yi " number of obs within each (year,good) group "
 la var idx_yi " index for obs within each (year,good) group "
 
 * Group Definition (3): (year,good-variety)
-egen             grp_yij = group(year ij)
+egen                grp_yij = group(year ij)
 bysort year ij: gen num_yij = _N
 bysort year ij: gen idx_yij = _n
 la var grp_yij " numerical indexes for (year,good-variety) groups    "
@@ -179,7 +180,7 @@ la var num_yij " number of obs within each (year,good-variety) group "
 la var idx_yij " index for obs within each (year,good-variety) group "
 
 * Group Definition (4): (year,name,good)
-egen                  grp_yni = group(year name3 i)
+egen                     grp_yni = group(year name3 i)
 bysort year name3 i: gen num_yni = _N
 bysort year name3 i: gen idx_yni = _n
 la var grp_yni " numerical indexes for (year,name,good) groups    "
@@ -187,7 +188,7 @@ la var num_yni " number of obs within each (year,name,good) group "
 la var idx_yni " index for obs within each (year,name,good) group "
 
 * Group Definition (5): (year,name,good-variety)
-egen                   grp_ynij = group(year name3 ij)
+egen                      grp_ynij = group(year name3 ij)
 bysort year name3 ij: gen num_ynij = _N
 bysort year name3 ij: gen idx_ynij = _n
 la var grp_ynij " numerical indexes for (year,name,good-variety) groups    "
@@ -535,6 +536,33 @@ la var num_ncyij3 " number of obs within each (name,country,year,good,variety3) 
 la var idx_ncyij3 " index for obs within each (name,country,year,good,variety3) group "
 
 * ==============================================================================
+* 5 BASELINE GROUP DEFINITIONS
+*
+* define group: new types
+* ----------------------------------------------------------------------------
+* | variables | year | name | country | good | variety | variety2 | variety3 |
+* ----------------------------------------------------------------------------
+* | group 14  | yes  |      |         |      |         |          |          |
+* ----------------------------------------------------------------------------
+* the new group definition, using only year
+* the baseline analyses then calculate statistics for
+* (i) within country
+* (ii) cross country
+* note that, year-country-good-variety uniquely identifies each observation
+* therefore, each year within/cross countries is comparing good-variety (ij)
+*
+* ==============================================================================
+
+* ------------------------------------------------------------------------------
+* Group Definition (14): (year)
+egen             grp_y = group(year)
+bysort year: gen num_y = _N
+bysort year: gen idx_y = _n
+la var grp_y " numerical indexes for (year) groups    "
+la var num_y " number of obs within each (year) group "
+la var idx_y " index for obs within each (year) group "
+
+* ==============================================================================
 * OUTPUT
 * ==============================================================================
 
@@ -571,6 +599,8 @@ keep name3 year ccode3 i j j2 j3 ij ijc ///
 	grp_nij3   num_nij3   idx_nij3   ///
 	grp_nyj3   num_nyj3   idx_nyj3   ///
 	grp_ncyij3 num_ncyij3 idx_ncyij3 ///
+	///
+	grp_y      num_y      idx_y      ///
 	 ///
 	pcf          pchangef          ///
 	pc_pennyf    pchange_pennyf    ///
@@ -613,6 +643,8 @@ order name3 year ccode3 i j j2 j3 ij ijc ///
 	grp_nij3   num_nij3   idx_nij3   ///
 	grp_nyj3   num_nyj3   idx_nyj3   ///
 	grp_ncyij3 num_ncyij3 idx_ncyij3 ///
+	///
+	grp_y      num_y      idx_y      ///
 	 ///
 	pcf          pchangef          ///
 	pc_pennyf    pchange_pennyf    ///
@@ -726,6 +758,10 @@ idx_nyj3         index for obs within each (name,year,variety3) group
 grp_ncyij3       numerical indexes for (name,country,year,good,variety3) groups
 num_ncyij3       number of obs within each (name,country,year,good,variety3) group
 idx_ncyij3       index for obs within each (name,country,year,good,variety3) group
+
+grp_y            numerical indexes for (year) groups
+num_y            number of obs within each (year) group
+idx_y            index for obs within each (year) group
 
 pc_allf          pc ind: indicate within- & outside-unit change
 pchange_allf     pc lev: (= pchangef)

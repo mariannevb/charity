@@ -1,5 +1,5 @@
 %%  pricecoordination_bill.m
-%   This script is the part of the analysis trying to answer the second set
+%   This script is the part of the analysis trying to answer the third set
 %   of questions.
 %
 %%  Where Is Price Coordination?
@@ -59,7 +59,6 @@
 %   by 'BILLY' case.
 %
 %%  Header
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 global con gpK pcK here
 con     = 1;
 here    = '../output/pricecoordination';

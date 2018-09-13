@@ -109,14 +109,31 @@ levelchange = levmat(index);
 valuesclass = bivalueclass;
 
 % adjust matrix size (compatibility with earlier version matlab)
-combinationmat = repmat(combination,1,size(valuesclass,2));
-levelchangemat = repmat(levelchange,1,size(valuesclass,2));
-valuesclassmat = repmat(valuesclass,size(combination,1),1);
+%combinationmat = repmat(combination,1,size(valuesclass,2));
+%levelchangemat = repmat(levelchange,1,size(valuesclass,2));
+%valuesclassmat = repmat(valuesclass,size(combination,1),1);
 
 % calculate the number of occurrence and average change of level
-match = combinationmat == valuesclassmat;
-count = sum( match,1 );
-change = sum( levelchangemat .* match,1 );
+%match  = combinationmat == valuesclassmat;
+%count  = sum( match,1 );
+%change = sum( levelchangemat .* match,1 );
+
+count  = NaN(size(valuesclass));
+change = NaN(size(valuesclass));
+
+for iterrow = 1:size(combination,1)
+
+	combinationrow = combination(iterrow,:) .* ones(size(valuesclass));
+	levelchangerow = levelchange(iterrow,:) .* ones(size(valuesclass));
+	valuesclassrow = valuesclass;
+
+	matchrow = combinationrow == valuesclassrow;
+	levelrow = levelchangerow .* matchrow;
+
+	count  = sum( [count ;matchrow;],1,'omitnan' );
+	change = sum( [change;levelrow;],1,'omitnan' );
+
+end
 
 % count the occurrence of each price change pattern
 biocc = count(:,1:210);

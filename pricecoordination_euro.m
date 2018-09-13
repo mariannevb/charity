@@ -61,7 +61,6 @@
 %           euno
 %
 %%  Header
-cd '/Users/xu/Dropbox/XU/03 GD/20 BU/baxter/xu/charity/charity';
 global con gpK pcK here
 con     = 1;
 here    = '../output/pricecoordination';
